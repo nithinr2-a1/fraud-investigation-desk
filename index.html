@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIU Case Log — Claims Risk Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">SIU Case Log · Academic Demonstration</div>
+    <h1>Insurance Claims Risk Review</h1>
+    <p class="sub">Upload a claims docket or load a sample. Each record is scored by a trained logistic regression model — coefficients, scaling, and intercept learned from a 6,000-claim dataset and run live in your browser — the same way an SIU analyst's checklist gets automated into a fraud-propensity score.</p>
+    <div class="controls">
+      <button class="btn primary" id="loadSampleBtn">Load Sample Docket</button>
+      <button class="btn" id="uploadBtn">Upload CSV</button>
+      <input type="file" id="fileInput" accept=".csv">
+      <button class="btn ghost" id="templateBtn">Download CSV Template</button>
+      <span class="file-name" id="fileName"></span>
+    </div>
+  </header>
+
+  <section class="ledger" id="ledger">
+    <div class="cell">
+      <div class="label">Claims Reviewed</div>
+      <div class="value mono" id="statTotal">—</div>
+    </div>
+    <div class="cell">
+      <div class="label">Flagged for Referral</div>
+      <div class="value mono alert" id="statFlagged">—</div>
+    </div>
+    <div class="cell">
+      <div class="label">Exposure at Risk</div>
+      <div class="value mono" id="statExposure">—</div>
+    </div>
+    <div class="cell">
+      <div class="label">Flag Rate</div>
+      <div class="value mono" id="statRate">—</div>
+    </div>
+  </section>
+
+  <div class="section-head">
+    <h2>Case Docket</h2>
+    <span class="note" id="docketNote">click a row to review</span>
+  </div>
+
+  <div class="review-grid">
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th data-key="id">Claim ID</th>
+            <th data-key="type">Type</th>
+            <th data-key="amount">Amount</th>
+            <th data-key="score">Risk</th>
+            <th data-key="verdict">Verdict</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr><td colspan="5" style="text-align:center;color:var(--muted);font-style:italic;padding:30px;">No docket loaded — load the sample or upload a CSV.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="detail-card" id="detailCard">
+      <div class="detail-empty">Select a claim from the docket to view its risk breakdown.</div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <h2>Docket Analytics</h2>
+    <span class="note">distribution across the loaded claims</span>
+  </div>
+  <div class="chart-grid">
+    <div class="chart-card">
+      <h3>Risk Score Distribution</h3>
+      <div class="chart-wrap"><canvas id="histChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>Flag Rate by Claim Type</h3>
+      <div class="chart-wrap"><canvas id="typeChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <h2>Methodology</h2>
+    <span class="note">how the score is built</span>
+  </div>
+  <details open>
+    <summary>How the score is computed (trained logistic regression)</summary>
+    <div class="details-body">
+      <p>The risk score is the output of a <strong>logistic regression model</strong> trained in scikit-learn on a synthetic 6,000-claim dataset (no real claims data was used or required). It is <em>not</em> a fixed checklist — the weight on every signal below was learned from data, not hand-set.</p>
+      <table class="rule-table">
+        <thead><tr><th>Model</th><th>Test accuracy</th><th>Precision</th><th>Recall</th><th>ROC-AUC</th></tr></thead>
+        <tbody>
+          <tr><td>Logistic Regression (deployed)</td><td id="mAcc">—</td><td id="mPrec">—</td><td id="mRec">—</td><td id="mAuc">—</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:14px;">For each claim, eleven raw and engineered features (claim-to-limit ratio, claim-to-premium ratio, policy age, prior claims, reporting delay, police report status, round-number amount, and claim type) are standardized using the training set's mean and standard deviation, combined with the model's learned coefficients, and passed through a sigmoid to produce a fraud probability — entirely in your browser, nothing is sent to a server.</p>
+      <p style="margin-top:10px;"><code class="mono">score = sigmoid( Σ coefficient × (feature − mean) / scale + intercept )</code></p>
+      <p style="margin-top:14px;">Claims scoring <strong>65+</strong> are flagged High, <strong>35–64</strong> Medium, below that Low. The detail panel shows each claim's top contributing features, signed by whether they pushed the score up or down. Missing fields in an uploaded CSV are imputed at the training-set average (zero contribution) rather than guessed, so scores degrade gracefully on incomplete data. Full training methodology, data generation process, and evaluation charts are documented in the companion report.</p>
+    </div>
+  </details>
+  <details>
+    <summary>Feature importance &amp; model comparison</summary>
+    <div class="details-body">
+      <p>A random forest was trained as a benchmark; it performed comparably (ROC-AUC ≈0.85 vs. 0.86 for logistic regression), suggesting the relationship is close to linear once ratios are computed — so the simpler, fully-explainable model was deployed. Both models agree on the dominant signals: claim-to-limit ratio, early-policy claims, and prior claims by the same claimant.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Test a single hypothetical claim</summary>
+    <div class="details-body">
+      <div class="tester-grid">
+        <div class="field"><label>Claim amount ($)</label><input type="number" id="tAmount" value="8500"></div>
+        <div class="field"><label>Policy limit ($)</label><input type="number" id="tLimit" value="10000"></div>
+        <div class="field"><label>Annual premium ($)</label><input type="number" id="tPremium" value="1200"></div>
+        <div class="field"><label>Days since policy start</label><input type="number" id="tPolicyAge" value="18"></div>
+        <div class="field"><label>Prior claims by claimant</label><input type="number" id="tPrior" value="2"></div>
+        <div class="field"><label>Days to report incident</label><input type="number" id="tDelay" value="21"></div>
+        <div class="field">
+          <label>Claim type</label>
+          <select id="tType">
+            <option>Auto</option><option>Property</option><option>Liability</option><option>Health</option><option>Workers Comp</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Police report filed</label>
+          <select id="tPolice"><option value="yes">Yes</option><option value="no" selected>No</option></select>
+        </div>
+        <div class="field" style="display:flex;align-items:flex-end;">
+          <button class="btn primary" id="testBtn" style="width:100%;">Run Score</button>
+        </div>
+      </div>
+      <div id="testResult"></div>
+    </div>
+  </details>
+
+  <footer>
+    Academic demonstration only — heuristic scoring, synthetic and user-supplied sample data. Not a real underwriting, claims, or fraud-determination system, and no data leaves your browser.
+  </footer>
+
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
