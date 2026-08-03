@@ -8,6 +8,32 @@ let typeChartInst = null;
 
 const CLAIM_TYPES = ['Auto','Property','Liability','Health','Workers Comp'];
 
+const API = "http://127.0.0.1:5000";
+
+async function loadClaimsFromDB() {
+    const response = await fetch(`${API}/claims`);
+
+    if (!response.ok) {
+        throw new Error("Failed to load claims");
+    }
+
+    claims = await response.json();
+
+    selectedId = null;
+    renderAll();
+}
+
+async function saveClaimsToDB() {
+
+    await fetch(`${API}/claims/bulk`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(claims)
+    });
+}
+
 /* ============================= TRAINED MODEL ============================= */
 /* Exported from scikit-learn LogisticRegression trained on a 6,000-claim
    synthetic dataset. See companion ML Methodology Report for the full
@@ -367,11 +393,12 @@ document.getElementById('fileInput').addEventListener('change', (e) => {
   Papa.parse(file, {
     header: true,
     skipEmptyLines: true,
-    complete: (results) => {
+    complete: async (results) => {
       const headers = results.meta.fields || [];
-      claims = mapCsvRows(results.data, headers);
-      selectedId = null;
-      renderAll();
+claims = mapCsvRows(results.data, headers);
+selectedId = null;
+await saveClaimsToDB();
+renderAll();
     },
     error: (err) => {
       alert('Could not parse that CSV: ' + err.message);
