@@ -25,4 +25,5 @@ notes = db["notes"]
 auditlogs = db["auditlogs"]
 suspects = db["suspects"]
 
+client.admin.command("ping")
 print("✅ Connected to MongoDB Atlas")
