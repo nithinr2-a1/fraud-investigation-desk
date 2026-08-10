@@ -1,14 +1,19 @@
 from flask_login import login_required, current_user
 from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
+from prediction import prediction_bp
 
 from config import Config
 from extensions import login_manager
+from evidence import evidence_bp
 
 # Use the correct import depending on your auth structure
 from auth import auth_bp
+from dashboard import dashboard_bp
 
 from db import claims, users, cases, evidence
+from claims import claims_bp
+from cases import cases_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -18,6 +23,11 @@ CORS(app)
 login_manager.init_app(app)
 
 app.register_blueprint(auth_bp)
+app.register_blueprint(dashboard_bp)
+app.register_blueprint(claims_bp)
+app.register_blueprint(cases_bp)
+app.register_blueprint(evidence_bp)
+app.register_blueprint(prediction_bp)
 
 print("\n========= URL MAP =========")
 print(app.url_map)
@@ -32,7 +42,7 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/claims", methods=["GET"])
+@app.route("/api/claims", methods=["GET"])
 def get_claims():
     data = []
 
@@ -43,7 +53,7 @@ def get_claims():
     return jsonify(data)
 
 
-@app.route("/claims", methods=["POST"])
+@app.route("/api/claims", methods=["POST"])
 def add_claim():
     claim = request.json
 
@@ -54,7 +64,7 @@ def add_claim():
     return jsonify(claim), 201
 
 
-@app.route("/claims/bulk", methods=["POST"])
+@app.route("/api/claims/bulk", methods=["POST"])
 def bulk_insert():
     data = request.json
 

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="mb-4">Add New Claim</h2>
+
+<form method="POST">
+
+    {{ form.hidden_tag() }}
+
+    <div class="row">
+
+        <div class="col-md-6 mb-3">
+            {{ form.claim_id.label }}
+            {{ form.claim_id(class="form-control") }}
+        </div>
+
+        <div class="col-md-6 mb-3">
+            {{ form.claim_type.label }}
+            {{ form.claim_type(class="form-control") }}
+        </div>
+
+        <div class="col-md-6 mb-3">
+            {{ form.claim_amount.label }}
+            {{ form.claim_amount(class="form-control") }}
+        </div>
+
+        <div class="col-md-6 mb-3">
+            {{ form.policy_limit.label }}
+            {{ form.policy_limit(class="form-control") }}
+        </div>
+
+        <div class="col-md-6 mb-3">
+            {{ form.premium.label }}
+            {{ form.premium(class="form-control") }}
+        </div>
+
+        <div class="col-md-6 mb-3">
+            {{ form.policy_age_days.label }}
+            {{ form.policy_age_days(class="form-control") }}
+        </div>
+
+        <div class="col-md-6 mb-3">
+            {{ form.prior_claims.label }}
+            {{ form.prior_claims(class="form-control") }}
+        </div>
+
+        <div class="col-md-6 mb-3">
+            {{ form.report_delay_days.label }}
+            {{ form.report_delay_days(class="form-control") }}
+        </div>
+
+        <div class="col-md-6 mb-3">
+            {{ form.customer_age.label }}
+            {{ form.customer_age(class="form-control") }}
+        </div>
+
+    </div>
+
+    {{ form.submit(class="btn btn-primary") }}
+
+</form>
+
+{% endblock %}

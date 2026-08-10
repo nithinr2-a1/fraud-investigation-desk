@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}
+Fraud Risk Result
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <h2>Fraud Risk Result</h2>
+
+    <a href="{{ url_for('prediction.prediction') }}"
+       class="btn btn-secondary">
+        Back to Prediction
+    </a>
+
+</div>
+
+
+<!-- Claim Information -->
+
+<div class="card shadow mb-4">
+
+    <div class="card-body">
+
+        <h5 class="card-title mb-4">
+            Claim Information
+        </h5>
+
+        <div class="row">
+
+            <div class="col-md-4">
+                <strong>Claim ID</strong>
+                <p>{{ claim.claim_id }}</p>
+            </div>
+
+            <div class="col-md-4">
+                <strong>Claim Type</strong>
+                <p>{{ claim.claim_type }}</p>
+            </div>
+
+            <div class="col-md-4">
+                <strong>Claim Amount</strong>
+                <p>₹ {{ claim.claim_amount }}</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Prediction Result -->
+
+<div class="card shadow">
+
+    <div class="card-body text-center">
+
+        <h5 class="card-title mb-4">
+            ML Prediction
+        </h5>
+
+        <div class="mb-4">
+
+            <h1>
+                {{ result.risk_percentage }}%
+            </h1>
+
+            <p class="text-muted">
+                Fraud Risk Score
+            </p>
+
+        </div>
+
+
+        <!-- Risk Level -->
+
+        {% if result.risk_level == "High" %}
+
+            <div class="alert alert-danger">
+
+                <h4>HIGH RISK</h4>
+
+                <p>
+                    This claim requires immediate investigation.
+                </p>
+
+            </div>
+
+        {% elif result.risk_level == "Medium" %}
+
+            <div class="alert alert-warning">
+
+                <h4>MEDIUM RISK</h4>
+
+                <p>
+                    This claim should be reviewed by an investigator.
+                </p>
+
+            </div>
+
+        {% else %}
+
+            <div class="alert alert-success">
+
+                <h4>LOW RISK</h4>
+
+                <p>
+                    No significant anomaly was detected.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- Technical ML Information -->
+
+        <div class="row mt-4">
+
+            <div class="col-md-6">
+
+                <strong>Risk Score</strong>
+
+                <p>
+                    {{ result.risk_score }}
+                </p>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <strong>Anomaly Score</strong>
+
+                <p>
+                    {{ result.anomaly_score }}
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

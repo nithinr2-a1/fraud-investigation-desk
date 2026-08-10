@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Edit Claim</h2>
+
+<form method="POST">
+
+    {{ form.hidden_tag() }}
+
+    {{ form.claim_id.label }}
+    {{ form.claim_id(class="form-control") }}
+
+    <br>
+
+    {{ form.claim_type.label }}
+    {{ form.claim_type(class="form-control") }}
+
+    <br>
+
+    {{ form.claim_amount.label }}
+    {{ form.claim_amount(class="form-control") }}
+
+    <br>
+
+    {{ form.submit(class="btn btn-primary") }}
+
+</form>
+
+{% endblock %}

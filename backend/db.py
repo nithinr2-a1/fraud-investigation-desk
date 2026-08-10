@@ -22,7 +22,7 @@ transactions = db["transactions"]
 predictions = db["predictions"]
 evidence = db["evidence"]
 notes = db["notes"]
-auditlogs = db["auditlogs"]
+audit_logs = db["audit_logs"]
 suspects = db["suspects"]
 
 client.admin.command("ping")

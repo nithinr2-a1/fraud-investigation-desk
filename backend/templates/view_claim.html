@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+<h2 class="mb-4">
+Claim Details
+</h2>
+
+<div class="card shadow">
+
+<div class="card-body">
+
+<table class="table">
+
+<tr>
+<th width="30%">Claim ID</th>
+<td>{{ claim.claim_id }}</td>
+</tr>
+
+<tr>
+<th>Claim Type</th>
+<td>{{ claim.claim_type }}</td>
+</tr>
+
+<tr>
+<th>Claim Amount</th>
+<td>₹ {{ claim.claim_amount }}</td>
+</tr>
+
+<tr>
+<th>Policy Limit</th>
+<td>₹ {{ claim.policy_limit }}</td>
+</tr>
+
+<tr>
+<th>Premium</th>
+<td>₹ {{ claim.premium }}</td>
+</tr>
+
+<tr>
+<th>Policy Age</th>
+<td>{{ claim.policy_age_days }} Days</td>
+</tr>
+
+<tr>
+<th>Prior Claims</th>
+<td>{{ claim.prior_claims }}</td>
+</tr>
+
+<tr>
+<th>Report Delay</th>
+<td>{{ claim.report_delay_days }} Days</td>
+</tr>
+
+<tr>
+<th>Customer Age</th>
+<td>{{ claim.customer_age }}</td>
+</tr>
+
+<tr>
+<th>Status</th>
+<td>
+
+{% if claim.status=="New" %}
+<span class="badge bg-primary">New</span>
+{% else %}
+<span class="badge bg-success">
+{{ claim.status }}
+</span>
+{% endif %}
+
+</td>
+</tr>
+
+</table>
+
+<a
+href="{{ url_for('claims.claims_list') }}"
+class="btn btn-secondary">
+
+Back
+
+</a>
+
+<a
+href="{{ url_for('claims.edit_claim', claim_id=claim._id) }}"
+class="btn btn-warning">
+
+Edit
+
+</a>
+
+<a
+href="{{ url_for('claims.delete_claim', claim_id=claim._id) }}"
+class="btn btn-danger">
+
+Delete
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}
+View Case
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+<h2 class="mb-4">
+Case Details
+</h2>
+
+<div class="card shadow">
+
+<div class="card-body">
+
+<table class="table">
+
+<tr>
+<th width="30%">Claim ID</th>
+<td>{{ case.claim_id }}</td>
+</tr>
+
+<tr>
+<th>Investigator</th>
+<td>{{ case.investigator }}</td>
+</tr>
+
+<tr>
+<th>Priority</th>
+<td>{{ case.priority }}</td>
+</tr>
+
+<tr>
+<th>Status</th>
+<td>{{ case.status }}</td>
+</tr>
+
+<tr>
+<th>Opened Date</th>
+<td>{{ case.opened_date }}</td>
+</tr>
+
+<tr>
+<th>Remarks</th>
+<td>{{ case.remarks }}</td>
+</tr>
+
+</table>
+
+<a href="{{ url_for('cases.cases_list') }}"
+class="btn btn-secondary">
+
+Back
+
+</a>
+
+<a href="{{ url_for('cases.edit_case', case_id=case._id) }}"
+class="btn btn-warning">
+
+Edit
+
+</a>
+
+<a href="{{ url_for('cases.delete_case', case_id=case._id) }}"
+class="btn btn-danger">
+
+Delete
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}
