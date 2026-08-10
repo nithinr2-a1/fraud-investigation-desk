@@ -1,14 +1,19 @@
 {% extends "base.html" %}
 
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
 {% block title %}
 Reports & Analytics
 {% endblock %}
 
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="container-fluid">
 
-    <div>
+    <!-- Page Header -->
+    <div class="mb-4">
         <h2>Reports & Analytics</h2>
 
         <p class="text-muted">
@@ -16,144 +21,192 @@ Reports & Analytics
         </p>
     </div>
 
-</div>
 
+    <!-- Summary Cards -->
+    <div class="row g-4 mb-4">
 
-<!-- ========================= -->
-<!-- Summary Cards -->
-<!-- ========================= -->
+        <!-- Total Claims -->
+        <div class="col-md-4">
+            <div class="card shadow-sm p-4 text-center h-100">
 
-<div class="row g-4 mb-4">
+                <h5>Total Claims</h5>
 
-    <div class="col-md-4">
-        <div class="card shadow-sm p-4 text-center">
+                <h2 class="text-primary">
+                    {{ total_claims }}
+                </h2>
 
-            <h5>Total Claims</h5>
-
-            <h2 class="text-primary">
-                {{ total_claims }}
-            </h2>
-
+            </div>
         </div>
-    </div>
 
 
-    <div class="col-md-4">
-        <div class="card shadow-sm p-4 text-center">
+        <!-- Total Cases -->
+        <div class="col-md-4">
+            <div class="card shadow-sm p-4 text-center h-100">
 
-            <h5>Total Cases</h5>
+                <h5>Total Cases</h5>
 
-            <h2 class="text-primary">
-                {{ total_cases }}
-            </h2>
+                <h2 class="text-primary">
+                    {{ total_cases }}
+                </h2>
 
+            </div>
         </div>
-    </div>
 
 
-    <div class="col-md-4">
-        <div class="card shadow-sm p-4 text-center">
+        <!-- Open Cases -->
+        <div class="col-md-4">
+            <div class="card shadow-sm p-4 text-center h-100">
 
-            <h5>Open Cases</h5>
+                <h5>Open Cases</h5>
 
-            <h2 class="text-warning">
-                {{ open_cases }}
-            </h2>
+                <h2 class="text-warning">
+                    {{ open_cases }}
+                </h2>
 
+            </div>
         </div>
-    </div>
 
 
-    <div class="col-md-4">
-        <div class="card shadow-sm p-4 text-center">
+        <!-- Total Evidence -->
+        <div class="col-md-4">
+            <div class="card shadow-sm p-4 text-center h-100">
 
-            <h5>Total Evidence</h5>
+                <h5>Total Evidence</h5>
 
-            <h2 class="text-info">
-                {{ total_evidence }}
-            </h2>
+                <h2 class="text-info">
+                    {{ total_evidence }}
+                </h2>
 
+            </div>
         </div>
-    </div>
 
 
-    <div class="col-md-4">
-        <div class="card shadow-sm p-4 text-center">
+        <!-- ML Predictions -->
+        <div class="col-md-4">
+            <div class="card shadow-sm p-4 text-center h-100">
 
-            <h5>ML Predictions</h5>
+                <h5>ML Predictions</h5>
 
-            <h2 class="text-primary">
-                {{ total_predictions }}
-            </h2>
+                <h2 class="text-primary">
+                    {{ total_predictions }}
+                </h2>
 
+            </div>
         </div>
-    </div>
 
 
-    <div class="col-md-4">
-        <div class="card shadow-sm p-4 text-center">
+        <!-- High Risk -->
+        <div class="col-md-4">
+            <div class="card shadow-sm p-4 text-center h-100">
 
-            <h5>High Risk</h5>
+                <h5>High Risk</h5>
 
-            <h2 class="text-danger">
-                {{ high_risk }}
-            </h2>
-
-        </div>
-    </div>
-
-</div>
-
-
-<!-- ========================= -->
-<!-- Risk Distribution -->
-<!-- ========================= -->
-
-<div class="card shadow-sm mb-4">
-
-    <div class="card-body">
-
-        <h4 class="mb-4">
-            ML Risk Distribution
-        </h4>
-
-        <div class="row text-center">
-
-            <div class="col-md-4">
-
-                <h5 class="text-danger">
-                    High Risk
-                </h5>
-
-                <h2>
+                <h2 class="text-danger">
                     {{ high_risk }}
                 </h2>
 
             </div>
+        </div>
+
+    </div>
 
 
-            <div class="col-md-4">
+    <!-- Charts -->
+    <div class="row g-4 mb-4">
 
-                <h5 class="text-warning">
-                    Medium Risk
-                </h5>
+        <!-- Risk Distribution -->
+        <div class="col-md-6">
 
-                <h2>
-                    {{ medium_risk }}
-                </h2>
+            <div class="card shadow-sm p-4">
+
+                <h4 class="text-center mb-3">
+                    ML Risk Distribution
+                </h4>
+
+                <div style="height: 350px;">
+                    <canvas id="riskDistributionChart"></canvas>
+                </div>
 
             </div>
 
+        </div>
 
-            <div class="col-md-4">
 
-                <h5 class="text-success">
-                    Low Risk
-                </h5>
+        <!-- Recent Claim Risk Scores -->
+        <div class="col-md-6">
 
-                <h2>
-                    {{ low_risk }}
-                </h2>
+            <div class="card shadow-sm p-4">
+
+                <h4 class="text-center mb-3">
+                    Recent Claim Risk Scores
+                </h4>
+
+                <div style="height: 350px;">
+                    <canvas id="riskScoresChart"></canvas>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ML Risk Summary -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-12">
+
+            <div class="card shadow-sm p-4">
+
+                <h4 class="text-center mb-4">
+                    ML Risk Summary
+                </h4>
+
+                <div class="row text-center">
+
+                    <!-- High Risk -->
+                    <div class="col-md-4">
+
+                        <h5 class="text-danger">
+                            High Risk
+                        </h5>
+
+                        <h2 class="text-danger">
+                            {{ high_risk }}
+                        </h2>
+
+                    </div>
+
+
+                    <!-- Medium Risk -->
+                    <div class="col-md-4">
+
+                        <h5 class="text-warning">
+                            Medium Risk
+                        </h5>
+
+                        <h2 class="text-warning">
+                            {{ medium_risk }}
+                        </h2>
+
+                    </div>
+
+
+                    <!-- Low Risk -->
+                    <div class="col-md-4">
+
+                        <h5 class="text-success">
+                            Low Risk
+                        </h5>
+
+                        <h2 class="text-success">
+                            {{ low_risk }}
+                        </h2>
+
+                    </div>
+
+                </div>
 
             </div>
 
@@ -164,128 +217,301 @@ Reports & Analytics
 </div>
 
 
-<!-- ========================= -->
-<!-- Recent Predictions -->
-<!-- ========================= -->
+<!-- ========================================================= -->
+<!-- DATA PROVIDED BY FLASK / JINJA                            -->
+<!-- ========================================================= -->
 
-<div class="card shadow-sm">
-
-    <div class="card-body">
-
-        <h4 class="mb-4">
-            Recent ML Predictions
-        </h4>
-
-
-        <div class="table-responsive">
-
-            <table class="table table-striped">
-
-                <thead>
-
-                    <tr>
-
-                        <th>Claim ID</th>
-
-                        <th>Risk %</th>
-
-                        <th>Risk Level</th>
-
-                        <th>Anomaly Score</th>
-
-                        <th>Predicted By</th>
-
-                        <th>Date</th>
-
-                    </tr>
-
-                </thead>
+<script id="report-data" type="application/json">
+{
+    "high_risk": {{ high_risk | tojson }},
+    "medium_risk": {{ medium_risk | tojson }},
+    "low_risk": {{ low_risk | tojson }},
+    "chart_labels": {{ chart_labels | tojson }},
+    "chart_values": {{ chart_values | tojson }}
+}
+</script>
 
 
-                <tbody>
+<!-- ========================================================= -->
+<!-- CHART.JS                                                  -->
+<!-- ========================================================= -->
 
-                {% for prediction in recent_predictions %}
+<script>
 
-                    <tr>
+    // Read data generated by Flask/Jinja
+    const reportData = JSON.parse(
+        document.getElementById("report-data").textContent
+    );
 
-                        <td>
-                            {{ prediction.get("claim_id", "N/A") }}
-                        </td>
 
-                        <td>
-                            {{ prediction.get("risk_percentage", 0) }}%
-                        </td>
+    // =========================================================
+    // ML RISK DISTRIBUTION
+    // =========================================================
 
-                        <td>
+    const riskDistributionCanvas =
+        document.getElementById("riskDistributionChart");
 
-                            {% if prediction.get("risk_level") == "High" %}
+    if (riskDistributionCanvas) {
 
-                                <span class="badge bg-danger">
-                                    High
-                                </span>
+        new Chart(riskDistributionCanvas, {
 
-                            {% elif prediction.get("risk_level") == "Medium" %}
+            type: "doughnut",
 
-                                <span class="badge bg-warning text-dark">
-                                    Medium
-                                </span>
+            data: {
 
-                            {% else %}
+                labels: [
+                    "High Risk",
+                    "Medium Risk",
+                    "Low Risk"
+                ],
 
-                                <span class="badge bg-success">
-                                    Low
-                                </span>
+                datasets: [{
 
-                            {% endif %}
+                    label: "Risk Distribution",
 
-                        </td>
+                    data: [
+                        reportData.high_risk,
+                        reportData.medium_risk,
+                        reportData.low_risk
+                    ]
 
-                        <td>
-                            {{ prediction.get("anomaly_score", "N/A") }}
-                        </td>
+                }]
 
-                        <td>
-                            {{ prediction.get("predicted_by", "N/A") }}
-                        </td>
+            },
 
-                        <td>
+            options: {
 
-                            {% if prediction.get("prediction_date") %}
+                responsive: true,
 
-                                {{ prediction.get("prediction_date").strftime("%d-%m-%Y %H:%M") }}
+                maintainAspectRatio: false,
 
-                            {% else %}
+                plugins: {
 
-                                N/A
+                    legend: {
+                        position: "bottom"
+                    }
 
-                            {% endif %}
+                }
 
-                        </td>
+            }
 
-                    </tr>
+        });
 
-                {% else %}
+    }
 
-                    <tr>
 
-                        <td colspan="6" class="text-center">
+    // =========================================================
+    // RECENT CLAIM RISK SCORES
+    // =========================================================
 
-                            No predictions available.
+    const riskScoresCanvas =
+        document.getElementById("riskScoresChart");
 
-                        </td>
+    if (riskScoresCanvas) {
 
-                    </tr>
+        new Chart(riskScoresCanvas, {
 
-                {% endfor %}
+            type: "bar",
 
-                </tbody>
+            data: {
 
-            </table>
+                labels: reportData.chart_labels,
 
-        </div>
+                datasets: [{
 
-    </div>
+                    label: "Risk Percentage",
 
-</div>
+                    data: reportData.chart_values
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        max: 100,
+
+                        title: {
+
+                            display: true,
+
+                            text: "Risk %"
+
+                        }
+
+                    }
+
+                },
+
+                plugins: {
+
+                    legend: {
+
+                        display: true
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+</script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<!-- Flask/Jinja report data -->
+<script id="report-data" type="application/json">
+{
+    "high_risk": {{ high_risk | tojson }},
+    "medium_risk": {{ medium_risk | tojson }},
+    "low_risk": {{ low_risk | tojson }},
+    "chart_labels": {{ chart_labels | tojson }},
+    "chart_values": {{ chart_values | tojson }}
+}
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    console.log("Reports page loaded");
+
+    // Check Chart.js
+    if (typeof Chart === "undefined") {
+        console.error("Chart.js is NOT loaded.");
+        return;
+    }
+
+    console.log("Chart.js loaded:", Chart.version);
+
+    // Read Flask data
+    const dataElement = document.getElementById("report-data");
+
+    if (!dataElement) {
+        console.error("report-data element not found.");
+        return;
+    }
+
+    const reportData = JSON.parse(dataElement.textContent);
+
+    console.log("Report data:", reportData);
+
+
+    // =====================================================
+    // ML RISK DISTRIBUTION
+    // =====================================================
+
+    const riskCanvas =
+        document.getElementById("riskDistributionChart");
+
+    if (!riskCanvas) {
+        console.error("riskDistributionChart canvas not found.");
+    } else {
+
+        new Chart(riskCanvas, {
+
+            type: "doughnut",
+
+            data: {
+                labels: [
+                    "High Risk",
+                    "Medium Risk",
+                    "Low Risk"
+                ],
+
+                datasets: [{
+                    label: "Risk Distribution",
+
+                    data: [
+                        Number(reportData.high_risk),
+                        Number(reportData.medium_risk),
+                        Number(reportData.low_risk)
+                    ]
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        position: "bottom"
+                    }
+                }
+            }
+        });
+
+        console.log("Risk distribution chart created.");
+    }
+
+
+    // =====================================================
+    // RECENT CLAIM RISK SCORES
+    // =====================================================
+
+    const scoresCanvas =
+        document.getElementById("riskScoresChart");
+
+    if (!scoresCanvas) {
+        console.error("riskScoresChart canvas not found.");
+    } else {
+
+        new Chart(scoresCanvas, {
+
+            type: "bar",
+
+            data: {
+                labels: reportData.chart_labels,
+
+                datasets: [{
+                    label: "Risk Percentage",
+
+                    data: reportData.chart_values
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+
+                        title: {
+                            display: true,
+                            text: "Risk %"
+                        }
+                    }
+                },
+
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                }
+            }
+        });
+
+        console.log("Risk scores chart created.");
+    }
+
+});
+</script>
 
 {% endblock %}

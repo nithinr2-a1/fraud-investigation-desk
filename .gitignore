@@ -1,17 +1,42 @@
-# Environment
-backend/.env
-
-# Python cache
+# Python
 __pycache__/
-**/__pycache__/
-*.pyc
+*.py[cod]
+*$py.class
 
-# Virtual environments
+# Virtual environment
 venv/
+.venv/
+env/
+
+# Environment / secrets
 .env
+.env.*
+!.env.example
 
-# VS Code
-.vscode/
-
-# Logs
+# Flask
+instance/
 *.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# Uploaded files
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Python test/cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
