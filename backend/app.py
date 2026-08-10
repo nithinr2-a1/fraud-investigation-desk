@@ -2,6 +2,7 @@ from flask_login import login_required, current_user
 from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 from prediction import prediction_bp
+from reports import reports_bp
 
 from config import Config
 from extensions import login_manager
@@ -28,6 +29,7 @@ app.register_blueprint(claims_bp)
 app.register_blueprint(cases_bp)
 app.register_blueprint(evidence_bp)
 app.register_blueprint(prediction_bp)
+app.register_blueprint(reports_bp)
 
 print("\n========= URL MAP =========")
 print(app.url_map)

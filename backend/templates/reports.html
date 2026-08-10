@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+
+{% block title %}
+Reports & Analytics
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h2>Reports & Analytics</h2>
+
+        <p class="text-muted">
+            Fraud investigation and ML prediction analytics
+        </p>
+    </div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- Summary Cards -->
+<!-- ========================= -->
+
+<div class="row g-4 mb-4">
+
+    <div class="col-md-4">
+        <div class="card shadow-sm p-4 text-center">
+
+            <h5>Total Claims</h5>
+
+            <h2 class="text-primary">
+                {{ total_claims }}
+            </h2>
+
+        </div>
+    </div>
+
+
+    <div class="col-md-4">
+        <div class="card shadow-sm p-4 text-center">
+
+            <h5>Total Cases</h5>
+
+            <h2 class="text-primary">
+                {{ total_cases }}
+            </h2>
+
+        </div>
+    </div>
+
+
+    <div class="col-md-4">
+        <div class="card shadow-sm p-4 text-center">
+
+            <h5>Open Cases</h5>
+
+            <h2 class="text-warning">
+                {{ open_cases }}
+            </h2>
+
+        </div>
+    </div>
+
+
+    <div class="col-md-4">
+        <div class="card shadow-sm p-4 text-center">
+
+            <h5>Total Evidence</h5>
+
+            <h2 class="text-info">
+                {{ total_evidence }}
+            </h2>
+
+        </div>
+    </div>
+
+
+    <div class="col-md-4">
+        <div class="card shadow-sm p-4 text-center">
+
+            <h5>ML Predictions</h5>
+
+            <h2 class="text-primary">
+                {{ total_predictions }}
+            </h2>
+
+        </div>
+    </div>
+
+
+    <div class="col-md-4">
+        <div class="card shadow-sm p-4 text-center">
+
+            <h5>High Risk</h5>
+
+            <h2 class="text-danger">
+                {{ high_risk }}
+            </h2>
+
+        </div>
+    </div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- Risk Distribution -->
+<!-- ========================= -->
+
+<div class="card shadow-sm mb-4">
+
+    <div class="card-body">
+
+        <h4 class="mb-4">
+            ML Risk Distribution
+        </h4>
+
+        <div class="row text-center">
+
+            <div class="col-md-4">
+
+                <h5 class="text-danger">
+                    High Risk
+                </h5>
+
+                <h2>
+                    {{ high_risk }}
+                </h2>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <h5 class="text-warning">
+                    Medium Risk
+                </h5>
+
+                <h2>
+                    {{ medium_risk }}
+                </h2>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <h5 class="text-success">
+                    Low Risk
+                </h5>
+
+                <h2>
+                    {{ low_risk }}
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- Recent Predictions -->
+<!-- ========================= -->
+
+<div class="card shadow-sm">
+
+    <div class="card-body">
+
+        <h4 class="mb-4">
+            Recent ML Predictions
+        </h4>
+
+
+        <div class="table-responsive">
+
+            <table class="table table-striped">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Claim ID</th>
+
+                        <th>Risk %</th>
+
+                        <th>Risk Level</th>
+
+                        <th>Anomaly Score</th>
+
+                        <th>Predicted By</th>
+
+                        <th>Date</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for prediction in recent_predictions %}
+
+                    <tr>
+
+                        <td>
+                            {{ prediction.get("claim_id", "N/A") }}
+                        </td>
+
+                        <td>
+                            {{ prediction.get("risk_percentage", 0) }}%
+                        </td>
+
+                        <td>
+
+                            {% if prediction.get("risk_level") == "High" %}
+
+                                <span class="badge bg-danger">
+                                    High
+                                </span>
+
+                            {% elif prediction.get("risk_level") == "Medium" %}
+
+                                <span class="badge bg-warning text-dark">
+                                    Medium
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-success">
+                                    Low
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+                            {{ prediction.get("anomaly_score", "N/A") }}
+                        </td>
+
+                        <td>
+                            {{ prediction.get("predicted_by", "N/A") }}
+                        </td>
+
+                        <td>
+
+                            {% if prediction.get("prediction_date") %}
+
+                                {{ prediction.get("prediction_date").strftime("%d-%m-%Y %H:%M") }}
+
+                            {% else %}
+
+                                N/A
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="6" class="text-center">
+
+                            No predictions available.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
