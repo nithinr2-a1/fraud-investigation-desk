@@ -4,3 +4,4 @@ python-dotenv
 gunicorn
 Flask-Login
 Flask-CORS
+flask_wtf
