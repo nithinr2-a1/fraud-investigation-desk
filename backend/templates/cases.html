@@ -6,83 +6,861 @@ Cases
 
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<style>
 
-    <h2>Cases</h2>
+    /* =========================================================
+       PAGE HEADER
+       ========================================================= */
 
-    <a href="{{ url_for('cases.add_case') }}" class="btn btn-primary">
-        + Add Case
-    </a>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 28px;
+        gap: 20px;
+    }
+
+    .page-header h2 {
+        font-size: 34px;
+        font-weight: 700;
+        margin: 0;
+        color: #172033;
+    }
+
+    .page-header p {
+        margin: 6px 0 0;
+        color: #667085;
+        font-size: 16px;
+    }
+
+
+    /* =========================================================
+       SUMMARY CARDS
+       ========================================================= */
+
+    .summary-card {
+        background: #ffffff;
+        border: 1px solid #edf0f5;
+        border-radius: 16px;
+        padding: 24px;
+        height: 100%;
+        box-shadow: 0 6px 18px rgba(16, 24, 40, 0.05);
+    }
+
+    .summary-label {
+        color: #667085;
+        font-size: 15px;
+        margin-bottom: 8px;
+    }
+
+    .summary-value {
+        font-size: 30px;
+        font-weight: 700;
+        color: #172033;
+        margin: 0;
+    }
+
+    .summary-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        float: right;
+    }
+
+    .icon-blue {
+        background: #eaf1ff;
+        color: #1769ff;
+    }
+
+    .icon-orange {
+        background: #fff3df;
+        color: #f59e0b;
+    }
+
+    .icon-red {
+        background: #ffe8eb;
+        color: #e63946;
+    }
+
+    .icon-green {
+        background: #e8f8ef;
+        color: #198754;
+    }
+
+
+    /* =========================================================
+       RECORDS CARD
+       ========================================================= */
+
+    .records-card {
+        background: #ffffff;
+        border: 1px solid #edf0f5;
+        border-radius: 16px;
+        box-shadow: 0 6px 18px rgba(16, 24, 40, 0.05);
+        overflow: hidden;
+        margin-top: 28px;
+    }
+
+    .records-header {
+        padding: 24px 26px;
+        border-bottom: 1px solid #edf0f5;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .records-header h4 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 700;
+        color: #172033;
+    }
+
+    .records-header p {
+        margin: 5px 0 0;
+        color: #667085;
+    }
+
+    .record-count {
+        border: 1px solid #d9dee8;
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 8px 14px;
+        color: #344054;
+        font-size: 14px;
+        white-space: nowrap;
+    }
+
+
+    /* =========================================================
+       TABLE
+       ========================================================= */
+
+    .cases-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .cases-table thead {
+        background: #f8fafc;
+    }
+
+    .cases-table th {
+        padding: 16px 20px;
+        text-align: left;
+        color: #344054;
+        font-size: 14px;
+        font-weight: 600;
+        border-bottom: 1px solid #e9edf3;
+        white-space: nowrap;
+    }
+
+    .cases-table td {
+        padding: 17px 20px;
+        color: #344054;
+        font-size: 14px;
+        border-bottom: 1px solid #edf0f5;
+        vertical-align: middle;
+    }
+
+    .cases-table tbody tr:hover {
+        background: #fafcff;
+    }
+
+    .claim-id {
+        font-weight: 600;
+        color: #172033;
+    }
+
+    .investigator {
+        font-weight: 500;
+        color: #344054;
+    }
+
+
+    /* =========================================================
+       STATUS BADGES
+       ========================================================= */
+
+    .badge-status,
+    .badge-priority {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 11px;
+        border-radius: 7px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .status-open {
+        background: #e8f1ff;
+        color: #1769ff;
+    }
+
+    .status-closed {
+        background: #e8f8ef;
+        color: #198754;
+    }
+
+    .status-pending {
+        background: #fff4df;
+        color: #b77900;
+    }
+
+    .status-other {
+        background: #eef1f5;
+        color: #667085;
+    }
+
+
+    /* =========================================================
+       PRIORITY BADGES
+       ========================================================= */
+
+    .priority-high {
+        background: #ffe8eb;
+        color: #d92d3a;
+    }
+
+    .priority-medium {
+        background: #fff4df;
+        color: #b77900;
+    }
+
+    .priority-low {
+        background: #e8f8ef;
+        color: #198754;
+    }
+
+    .priority-other {
+        background: #eef1f5;
+        color: #667085;
+    }
+
+
+    /* =========================================================
+       ACTION BUTTONS
+       ========================================================= */
+
+    .action-group {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+    }
+
+    .action-btn {
+        width: 38px;
+        height: 36px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        font-size: 15px;
+        border: 1px solid;
+        transition: all 0.15s ease;
+    }
+
+    .action-view {
+        color: #1769ff;
+        border-color: #8db5ff;
+        background: #ffffff;
+    }
+
+    .action-view:hover {
+        background: #1769ff;
+        color: #ffffff;
+    }
+
+    .action-edit {
+        color: #f59e0b;
+        border-color: #f7c66a;
+        background: #ffffff;
+    }
+
+    .action-edit:hover {
+        background: #f59e0b;
+        color: #ffffff;
+    }
+
+    .action-delete {
+        color: #e63946;
+        border-color: #f2a0a7;
+        background: #ffffff;
+    }
+
+    .action-delete:hover {
+        background: #e63946;
+        color: #ffffff;
+    }
+
+
+    /* =========================================================
+       EMPTY STATE
+       ========================================================= */
+
+    .empty-state {
+        text-align: center;
+        padding: 70px 20px;
+        color: #667085;
+    }
+
+    .empty-state i {
+        font-size: 45px;
+        color: #98a2b3;
+        margin-bottom: 15px;
+    }
+
+    .empty-state h5 {
+        color: #344054;
+        font-weight: 600;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+       ========================================================= */
+
+    @media (max-width: 900px) {
+
+        .page-header {
+            flex-direction: column;
+        }
+
+        .records-header {
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .cases-table {
+            min-width: 850px;
+        }
+    }
+
+</style>
+
+
+<!-- ========================================================= -->
+<!-- PAGE HEADER -->
+<!-- ========================================================= -->
+
+<div class="page-header">
+
+    <div>
+
+        <h2>
+            Cases
+        </h2>
+
+        <p>
+            Manage fraud investigations and case records
+        </p>
+
+    </div>
+
+
+    <div>
+
+        <a
+            href="{{ url_for('cases.add_case') }}"
+            class="btn btn-primary px-4 py-2"
+        >
+
+            <i class="bi bi-plus-lg me-2"></i>
+
+            Add Case
+
+        </a>
+
+    </div>
 
 </div>
 
-<table class="table table-striped table-hover">
 
-    <thead>
+<!-- ========================================================= -->
+<!-- SUMMARY CARDS -->
+<!-- ========================================================= -->
 
-        <tr>
+<div class="row g-4">
 
-            <th>Claim ID</th>
 
-            <th>Investigator</th>
+    <!-- Total Cases -->
 
-            <th>Priority</th>
+    <div class="col-xl-3 col-md-6">
 
-            <th>Status</th>
+        <div class="summary-card">
 
-            <th>Opened Date</th>
+            <div class="summary-icon icon-blue">
 
-            <th>Actions</th>
+                <i class="bi bi-folder2-open"></i>
 
-        </tr>
+            </div>
 
-    </thead>
+            <div class="summary-label">
+                Total Cases
+            </div>
 
-    <tbody>
+            <p class="summary-value">
+                {{ total_cases }}
+            </p>
 
-        {% for case in cases %}
+            <small class="text-muted">
+                Investigation records
+            </small>
 
-        <tr>
+        </div>
 
-            <td>{{ case.claim_id }}</td>
+    </div>
 
-            <td>{{ case.investigator }}</td>
 
-            <td>{{ case.priority }}</td>
+    <!-- Open Cases -->
 
-            <td>{{ case.status }}</td>
+    <div class="col-xl-3 col-md-6">
 
-            <td>
-                {% if case.opened_date %}
-                    {{ case.opened_date.strftime("%d-%m-%Y") }}
-                {% endif %}
-            </td>
+        <div class="summary-card">
 
-            <td>
+            <div class="summary-icon icon-orange">
 
-<a href="{{ url_for('cases.view_case', case_id=case._id) }}"
-class="btn btn-info btn-sm">
-View
-</a>
+                <i class="bi bi-clock-history"></i>
 
-<a href="{{ url_for('cases.edit_case', case_id=case._id) }}"
-class="btn btn-warning btn-sm">
-Edit
-</a>
+            </div>
 
-<a href="{{ url_for('cases.delete_case', case_id=case._id) }}"
-class="btn btn-danger btn-sm">
-Delete
-</a>
+            <div class="summary-label">
+                Open Cases
+            </div>
 
-            </td>
+            <p class="summary-value">
+                {{ open_cases }}
+            </p>
 
-        </tr>
+            <small class="text-muted">
+                Investigations in progress
+            </small>
 
-        {% endfor %}
+        </div>
 
-    </tbody>
+    </div>
 
-</table>
+
+    <!-- High Priority -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="summary-card">
+
+            <div class="summary-icon icon-red">
+
+                <i class="bi bi-exclamation-triangle"></i>
+
+            </div>
+
+            <div class="summary-label">
+                High Priority
+            </div>
+
+            <p
+                class="summary-value"
+                style="color:#e63946;"
+            >
+                {{ high_priority_cases }}
+            </p>
+
+            <small class="text-muted">
+                Cases requiring attention
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- Closed Cases -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="summary-card">
+
+            <div class="summary-icon icon-green">
+
+                <i class="bi bi-check-circle"></i>
+
+            </div>
+
+            <div class="summary-label">
+                Closed Cases
+            </div>
+
+            <p class="summary-value">
+                {{ closed_cases }}
+            </p>
+
+            <small class="text-muted">
+                Completed investigations
+            </small>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- CASE RECORDS -->
+<!-- ========================================================= -->
+
+<div class="records-card">
+
+
+    <!-- Records Header -->
+
+    <div class="records-header">
+
+        <div>
+
+            <h4>
+                Case Records
+            </h4>
+
+            <p>
+                Review and manage fraud investigation cases
+            </p>
+
+        </div>
+
+
+        <div class="record-count">
+
+            {{ total_cases }} Records
+
+        </div>
+
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- TABLE -->
+    <!-- ===================================================== -->
+
+    {% if cases %}
+
+        <div class="table-wrapper">
+
+            <table class="cases-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Claim ID
+                        </th>
+
+                        <th>
+                            Investigator
+                        </th>
+
+                        <th>
+                            Priority
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Opened Date
+                        </th>
+
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for case in cases %}
+
+                    <tr>
+
+
+                        <!-- Claim ID -->
+
+                        <td>
+
+                            <span class="claim-id">
+
+                                {{ case.get(
+                                    "claim_id",
+                                    "N/A"
+                                ) }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- Investigator -->
+
+                        <td>
+
+                            <span class="investigator">
+
+                                {{ case.get(
+                                    "investigator",
+                                    "N/A"
+                                ) }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- Priority -->
+
+                        <td>
+
+                            {% set priority =
+                                case.get(
+                                    "priority",
+                                    "N/A"
+                                )
+                            %}
+
+                            {% if priority|lower == "high" %}
+
+                                <span
+                                    class="badge-priority priority-high"
+                                >
+                                    High
+                                </span>
+
+                            {% elif priority|lower == "medium" %}
+
+                                <span
+                                    class="badge-priority priority-medium"
+                                >
+                                    Medium
+                                </span>
+
+                            {% elif priority|lower == "low" %}
+
+                                <span
+                                    class="badge-priority priority-low"
+                                >
+                                    Low
+                                </span>
+
+                            {% else %}
+
+                                <span
+                                    class="badge-priority priority-other"
+                                >
+                                    {{ priority }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Status -->
+
+                        <td>
+
+                            {% set status =
+                                case.get(
+                                    "status",
+                                    "N/A"
+                                )
+                            %}
+
+                            {% if status|lower == "open" %}
+
+                                <span
+                                    class="badge-status status-open"
+                                >
+                                    Open
+                                </span>
+
+                            {% elif status|lower == "closed" %}
+
+                                <span
+                                    class="badge-status status-closed"
+                                >
+                                    Closed
+                                </span>
+
+                            {% elif status|lower in [
+                                "pending",
+                                "under review"
+                            ] %}
+
+                                <span
+                                    class="badge-status status-pending"
+                                >
+                                    {{ status }}
+                                </span>
+
+                            {% else %}
+
+                                <span
+                                    class="badge-status status-other"
+                                >
+                                    {{ status }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Opened Date -->
+
+                        <td>
+
+                            {% if case.get(
+                                "opened_date"
+                            ) %}
+
+                                {{ case[
+                                    "opened_date"
+                                ].strftime(
+                                    "%d-%m-%Y"
+                                ) }}
+
+                            {% else %}
+
+                                <span class="text-muted">
+                                    —
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Actions -->
+
+                        <td>
+
+                            <div class="action-group">
+
+
+                                <!-- View -->
+
+                                <a
+                                    href="{{ url_for(
+                                        'cases.view_case',
+                                        case_id=case['_id']
+                                    ) }}"
+                                    class="action-btn action-view"
+                                    title="View Case"
+                                >
+
+                                    <i class="bi bi-eye"></i>
+
+                                </a>
+
+
+                                <!-- Edit -->
+
+                                <a
+                                    href="{{ url_for(
+                                        'cases.edit_case',
+                                        case_id=case['_id']
+                                    ) }}"
+                                    class="action-btn action-edit"
+                                    title="Edit Case"
+                                >
+
+                                    <i class="bi bi-pencil"></i>
+
+                                </a>
+
+
+                                <!-- Delete -->
+
+                                <a
+                                    href="{{ url_for(
+                                        'cases.delete_case',
+                                        case_id=case['_id']
+                                    ) }}"
+                                    class="action-btn action-delete"
+                                    title="Delete Case"
+                                    onclick="return confirm(
+                                        'Are you sure you want to delete this case?'
+                                    );"
+                                >
+
+                                    <i class="bi bi-trash"></i>
+
+                                </a>
+
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+    {% else %}
+
+        <!-- ================================================= -->
+        <!-- EMPTY STATE -->
+        <!-- ================================================= -->
+
+        <div class="empty-state">
+
+            <i class="bi bi-folder-x"></i>
+
+            <h5>
+                No Cases Found
+            </h5>
+
+            <p>
+                No investigation cases have been created yet.
+            </p>
+
+            <a
+                href="{{ url_for('cases.add_case') }}"
+                class="btn btn-primary"
+            >
+
+                <i class="bi bi-plus-lg me-2"></i>
+
+                Create First Case
+
+            </a>
+
+        </div>
+
+    {% endif %}
+
+
+</div>
+
 
 {% endblock %}

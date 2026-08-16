@@ -10,10 +10,23 @@ Fraud Risk Result
 
     <h2>Fraud Risk Result</h2>
 
-    <a href="{{ url_for('prediction.prediction') }}"
-       class="btn btn-secondary">
+<div class="d-flex justify-content-end gap-2 mb-3">
+
+    <a
+        href="{{ url_for('prediction.prediction') }}"
+        class="btn btn-secondary"
+    >
         Back to Prediction
     </a>
+
+    <a
+        href="{{ url_for('cases.add_case', claim_id=claim['_id']) }}"
+        class="btn btn-danger"
+    >
+        Create Investigation Case
+    </a>
+
+</div>
 
 </div>
 

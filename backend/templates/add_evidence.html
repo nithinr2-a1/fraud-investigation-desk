@@ -6,49 +6,376 @@ Add Evidence
 
 {% block content %}
 
-<div class="container-fluid">
+<!-- ========================================================= -->
+<!-- PAGE HEADER -->
+<!-- ========================================================= -->
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Add Evidence</h2>
-        <a href="{{ url_for('evidence.evidence_list') }}" class="btn btn-secondary">
-            Back
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2 class="mb-1 fw-bold">
+            Add Evidence
+        </h2>
+
+        <p class="text-muted mb-0">
+            Upload supporting documents and evidence for a fraud investigation.
+        </p>
+
+    </div>
+
+    <div>
+
+        <a
+            href="{{ url_for('evidence.evidence_list') }}"
+            class="btn btn-light border"
+        >
+
+            <i class="bi bi-arrow-left me-1"></i>
+
+            Back to Evidence
+
         </a>
-    </div>
 
-    <div class="card shadow">
-        <div class="card-body">
-
-<form method="POST" enctype="multipart/form-data">
-
-    {{ form.hidden_tag() }}
-
-    <div class="mb-3">
-        {{ form.case_id.label(class="form-label") }}
-        {{ form.case_id(class="form-control") }}
-    </div>
-
-    <div class="mb-3">
-        {{ form.evidence_type.label(class="form-label") }}
-        {{ form.evidence_type(class="form-control") }}
-    </div>
-
-    <div class="mb-3">
-        {{ form.description.label(class="form-label") }}
-        {{ form.description(class="form-control") }}
-    </div>
-
-    <div class="mb-3">
-        {{ form.evidence_file.label(class="form-label") }}
-        {{ form.evidence_file(class="form-control") }}
-    </div>
-
-    {{ form.submit(class="btn btn-primary") }}
-
-</form>
-
-        </div>
     </div>
 
 </div>
+
+
+<!-- ========================================================= -->
+<!-- MAIN CARD -->
+<!-- ========================================================= -->
+
+<div class="row justify-content-center">
+
+    <div class="col-xl-9 col-lg-10">
+
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-body p-4">
+
+
+                <!-- ================================================= -->
+                <!-- CARD HEADER -->
+                <!-- ================================================= -->
+
+                <div class="d-flex align-items-center mb-4">
+
+                    <div
+                        class="rounded-3 d-flex align-items-center justify-content-center me-3"
+                        style="
+                            width:46px;
+                            height:46px;
+                            background:#eff6ff;
+                            color:#2563eb;
+                        "
+                    >
+
+                        <i class="bi bi-cloud-arrow-up fs-4"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h5 class="fw-bold mb-1">
+                            Evidence Information
+                        </h5>
+
+                        <p class="text-muted mb-0 small">
+                            Provide the details and upload the supporting evidence.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- FORM -->
+                <!-- ================================================= -->
+
+                <form
+                    method="POST"
+                    enctype="multipart/form-data"
+                    novalidate
+                >
+
+                    {{ form.hidden_tag() }}
+
+
+                    <!-- ============================================= -->
+                    <!-- CASE -->
+                    <!-- ============================================= -->
+
+                    <div class="mb-4">
+
+                        {{ form.case_id.label(
+                            class="form-label fw-semibold"
+                        ) }}
+
+                        {{ form.case_id(
+                            class="form-select"
+                        ) }}
+
+                        {% if form.case_id.errors %}
+
+                            <div class="text-danger small mt-2">
+
+                                {% for error in form.case_id.errors %}
+
+                                    <div>
+
+                                        <i class="bi bi-exclamation-circle me-1"></i>
+
+                                        {{ error }}
+
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% endif %}
+
+                        <div class="form-text">
+
+                            Select the investigation case associated with this evidence.
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ============================================= -->
+                    <!-- EVIDENCE TYPE -->
+                    <!-- ============================================= -->
+
+                    <div class="mb-4">
+
+                        {{ form.evidence_type.label(
+                            class="form-label fw-semibold"
+                        ) }}
+
+                        {{ form.evidence_type(
+                            class="form-select"
+                        ) }}
+
+                        {% if form.evidence_type.errors %}
+
+                            <div class="text-danger small mt-2">
+
+                                {% for error in form.evidence_type.errors %}
+
+                                    <div>
+
+                                        <i class="bi bi-exclamation-circle me-1"></i>
+
+                                        {{ error }}
+
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% endif %}
+
+                        <div class="form-text">
+
+                            Select the category that best describes the evidence.
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ============================================= -->
+                    <!-- DESCRIPTION -->
+                    <!-- ============================================= -->
+
+                    <div class="mb-4">
+
+                        {{ form.description.label(
+                            class="form-label fw-semibold"
+                        ) }}
+
+                        {{ form.description(
+                            class="form-control",
+                            rows="4",
+                            placeholder="Enter a brief description of the evidence..."
+                        ) }}
+
+                        {% if form.description.errors %}
+
+                            <div class="text-danger small mt-2">
+
+                                {% for error in form.description.errors %}
+
+                                    <div>
+
+                                        <i class="bi bi-exclamation-circle me-1"></i>
+
+                                        {{ error }}
+
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% endif %}
+
+                        <div class="form-text">
+
+                            Provide any relevant context that will help the investigator understand the evidence.
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ============================================= -->
+                    <!-- FILE UPLOAD -->
+                    <!-- ============================================= -->
+
+                    <div class="mb-4">
+
+                        {{ form.evidence_file.label(
+                            class="form-label fw-semibold"
+                        ) }}
+
+                        <div
+                            class="p-4 rounded-3"
+                            style="
+                                border:2px dashed #d0d5dd;
+                                background:#f8fafc;
+                            "
+                        >
+
+                            <div class="text-center mb-3">
+
+                                <div
+                                    class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                                    style="
+                                        width:60px;
+                                        height:60px;
+                                        background:#eaf1ff;
+                                        color:#1769ff;
+                                    "
+                                >
+
+                                    <i class="bi bi-file-earmark-arrow-up fs-3"></i>
+
+                                </div>
+
+                                <h6 class="fw-semibold mb-1">
+                                    Select Evidence File
+                                </h6>
+
+                                <p class="text-muted small mb-0">
+                                    Choose the file you want to attach to this investigation.
+                                </p>
+
+                            </div>
+
+
+                            {{ form.evidence_file(
+                                class="form-control"
+                            ) }}
+
+
+                            {% if form.evidence_file.errors %}
+
+                                <div class="text-danger small mt-2">
+
+                                    {% for error in form.evidence_file.errors %}
+
+                                        <div>
+
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+
+                                            {{ error }}
+
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ============================================= -->
+                    <!-- UPLOAD INFORMATION -->
+                    <!-- ============================================= -->
+
+                    <div class="alert alert-info border-0">
+
+                        <div class="d-flex">
+
+                            <i class="bi bi-info-circle me-2 mt-1"></i>
+
+                            <div>
+
+                                <strong>
+                                    Evidence handling
+                                </strong>
+
+                                <div class="small mt-1">
+
+                                    Make sure the uploaded file is relevant to the selected
+                                    investigation case and that the description accurately
+                                    identifies its purpose.
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ============================================= -->
+                    <!-- FORM ACTIONS -->
+                    <!-- ============================================= -->
+
+                    <div
+                        class="d-flex justify-content-between align-items-center pt-3 mt-3 border-top"
+                    >
+
+                        <a
+                            href="{{ url_for('evidence.evidence_list') }}"
+                            class="btn btn-light border px-4"
+                        >
+
+                            <i class="bi bi-x-lg me-1"></i>
+
+                            Cancel
+
+                        </a>
+
+
+                        {{ form.submit(
+                            class="btn btn-primary px-4"
+                        ) }}
+
+                    </div>
+
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 
 {% endblock %}

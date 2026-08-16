@@ -6,74 +6,974 @@ Claims
 
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<!-- =========================================================
+     PAGE HEADER
+========================================================= -->
 
-    <h2>Claims</h2>
+<div class="d-flex justify-content-between align-items-start mb-4">
 
-<a href="{{ url_for('claims.add_claim') }}" class="btn btn-primary">
-    + Add Claim
-</a>
+    <div>
+        <h1 class="fw-bold mb-1">
+            Claims
+        </h1>
+
+        <p class="text-muted mb-0">
+            Manage insurance claims and fraud investigation records
+        </p>
+    </div>
+
+    <a
+        href="{{ url_for('claims.add_claim') }}"
+        class="btn btn-primary px-4 py-2"
+    >
+        <i class="bi bi-plus-lg me-2"></i>
+        Add Claim
+    </a>
 
 </div>
 
-<table class="table table-striped table-hover">
 
-<thead>
+<!-- =========================================================
+     SUMMARY CARDS
+========================================================= -->
 
-<tr>
+<div class="row g-4 mb-4">
 
-<th>Claim ID</th>
+    <!-- Total Claims -->
 
-<th>Type</th>
+    <div class="col-xl-4 col-md-6">
 
-<th>Amount</th>
+        <div class="card border-0 shadow-sm h-100">
 
-<th>Status</th>
+            <div class="card-body p-4">
 
-<th>Actions</th>
+                <div class="d-flex justify-content-between align-items-center">
 
-</tr>
+                    <div>
 
-</thead>
+                        <div class="text-muted mb-2">
+                            Total Claims
+                        </div>
 
-<tbody>
+                        <h2 class="fw-bold mb-0">
+                            {{ total_claims }}
+                        </h2>
 
-{% for claim in claims %}
+                    </div>
 
-<tr>
+                    <div
+                        class="rounded-3 p-3"
+                        style="
+                            background:#e8f0ff;
+                            color:#2563eb;
+                        "
+                    >
 
-<td>{{ claim.claim_id }}</td>
+                        <i class="bi bi-file-earmark-text fs-4"></i>
 
-<td>{{ claim.claim_type }}</td>
+                    </div>
 
-<td>₹ {{ claim.claim_amount }}</td>
+                </div>
 
-<td>{{ claim.status }}</td>
+                <div class="text-muted small mt-3">
 
-<td>
+                    <i class="bi bi-database me-1"></i>
 
-<a
-href="{{ url_for('claims.view_claim', claim_id=claim._id) }}"
-class="btn btn-info">
+                    Claims registered in the system
 
-View
+                </div>
 
-<button class="btn btn-sm btn-warning">
-Edit
-</button>
+            </div>
 
-<button class="btn btn-sm btn-danger">
-Delete
-</button>
+        </div>
 
-</td>
+    </div>
 
-</tr>
 
-{% endfor %}
+    <!-- Claims Under Review -->
 
-</tbody>
+    <div class="col-xl-4 col-md-6">
 
-</table>
+        <div class="card border-0 shadow-sm h-100">
+
+            <div class="card-body p-4">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <div class="text-muted mb-2">
+                            Claims Under Review
+                        </div>
+
+                        <h2 class="fw-bold mb-0">
+                            {{ under_review }}
+                        </h2>
+
+                    </div>
+
+                    <div
+                        class="rounded-3 p-3"
+                        style="
+                            background:#fff3df;
+                            color:#f59e0b;
+                        "
+                    >
+
+                        <i class="bi bi-clock-history fs-4"></i>
+
+                    </div>
+
+                </div>
+
+                <div class="text-muted small mt-3">
+
+                    <i class="bi bi-search me-1"></i>
+
+                    Claims currently under investigation
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- High Risk Claims -->
+
+    <div class="col-xl-4 col-md-6">
+
+        <div class="card border-0 shadow-sm h-100">
+
+            <div class="card-body p-4">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <div class="text-muted mb-2">
+                            High Risk Claims
+                        </div>
+
+                        <h2 class="fw-bold mb-0 text-danger">
+                            {{ high_risk }}
+                        </h2>
+
+                    </div>
+
+                    <div
+                        class="rounded-3 p-3"
+                        style="
+                            background:#ffe9ed;
+                            color:#dc3545;
+                        "
+                    >
+
+                        <i class="bi bi-exclamation-triangle fs-4"></i>
+
+                    </div>
+
+                </div>
+
+                <div class="text-danger small mt-3">
+
+                    <i class="bi bi-shield-exclamation me-1"></i>
+
+                    Claims requiring attention
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     SEARCH AND FILTERS
+========================================================= -->
+
+<div class="card border-0 shadow-sm mb-4">
+
+    <div class="card-body p-4">
+
+        <form
+            method="GET"
+            action="{{ url_for('claims.claims_list') }}"
+        >
+
+            <div class="row g-3 align-items-end">
+
+                <!-- Search -->
+
+                <div class="col-lg-4">
+
+                    <label class="form-label fw-semibold">
+                        Search Claim
+                    </label>
+
+                    <div class="input-group">
+
+                        <span class="input-group-text bg-white">
+                            <i class="bi bi-search"></i>
+                        </span>
+
+                        <input
+                            type="text"
+                            name="search"
+                            class="form-control"
+                            placeholder="Search Claim ID..."
+                            value="{{ search or '' }}"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Claim Type -->
+
+                <div class="col-lg-2">
+
+                    <label class="form-label fw-semibold">
+                        Claim Type
+                    </label>
+
+                    <select
+                        name="claim_type"
+                        class="form-select"
+                    >
+
+                        <option
+                            value=""
+                            {% if not selected_claim_type %}
+                                selected
+                            {% endif %}
+                        >
+                            All Types
+                        </option>
+
+                        {% for claim_type in claim_types %}
+
+                            <option
+                                value="{{ claim_type }}"
+                                {% if selected_claim_type == claim_type %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ claim_type }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div class="col-lg-2">
+
+                    <label class="form-label fw-semibold">
+                        Status
+                    </label>
+
+                    <select
+                        name="status"
+                        class="form-select"
+                    >
+
+                        <option
+                            value=""
+                            {% if not selected_status %}
+                                selected
+                            {% endif %}
+                        >
+                            All Status
+                        </option>
+
+                        <option
+                            value="New"
+                            {% if selected_status == "New" %}
+                                selected
+                            {% endif %}
+                        >
+                            New
+                        </option>
+
+                        <option
+                            value="Under Review"
+                            {% if selected_status == "Under Review" %}
+                                selected
+                            {% endif %}
+                        >
+                            Under Review
+                        </option>
+
+                        <option
+                            value="Closed"
+                            {% if selected_status == "Closed" %}
+                                selected
+                            {% endif %}
+                        >
+                            Closed
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- ML Risk -->
+
+                <div class="col-lg-2">
+
+                    <label class="form-label fw-semibold">
+                        ML Risk
+                    </label>
+
+                    <select
+                        name="risk"
+                        class="form-select"
+                    >
+
+                        <option
+                            value=""
+                            {% if not selected_risk %}
+                                selected
+                            {% endif %}
+                        >
+                            All Risk
+                        </option>
+
+                        <option
+                            value="High"
+                            {% if selected_risk == "High" %}
+                                selected
+                            {% endif %}
+                        >
+                            High Risk
+                        </option>
+
+                        <option
+                            value="Medium"
+                            {% if selected_risk == "Medium" %}
+                                selected
+                            {% endif %}
+                        >
+                            Medium Risk
+                        </option>
+
+                        <option
+                            value="Low"
+                            {% if selected_risk == "Low" %}
+                                selected
+                            {% endif %}
+                        >
+                            Low Risk
+                        </option>
+
+                        <option
+                            value="Not Predicted"
+                            {% if selected_risk == "Not Predicted" %}
+                                selected
+                            {% endif %}
+                        >
+                            Not Predicted
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Buttons -->
+
+                <div class="col-lg-2">
+
+                    <div class="d-flex gap-2">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary flex-grow-1"
+                        >
+                            <i class="bi bi-funnel me-1"></i>
+                            Filter
+                        </button>
+
+                        <a
+                            href="{{ url_for('claims.claims_list') }}"
+                            class="btn btn-outline-secondary"
+                            title="Clear filters"
+                        >
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     ACTIVE FILTER INFORMATION
+========================================================= -->
+
+{% if search or selected_claim_type or selected_status or selected_risk %}
+
+<div class="alert alert-info border-0 shadow-sm">
+
+    <div class="d-flex justify-content-between align-items-center">
+
+        <div>
+
+            <strong>
+                Active Filters:
+            </strong>
+
+            {% if search %}
+                <span class="badge bg-secondary ms-2">
+                    Search: {{ search }}
+                </span>
+            {% endif %}
+
+            {% if selected_claim_type %}
+                <span class="badge bg-secondary ms-2">
+                    Type: {{ selected_claim_type }}
+                </span>
+            {% endif %}
+
+            {% if selected_status %}
+                <span class="badge bg-secondary ms-2">
+                    Status: {{ selected_status }}
+                </span>
+            {% endif %}
+
+            {% if selected_risk %}
+                <span class="badge bg-danger ms-2">
+                    ML Risk: {{ selected_risk }}
+                </span>
+            {% endif %}
+
+        </div>
+
+        <a
+            href="{{ url_for('claims.claims_list') }}"
+            class="btn btn-sm btn-outline-secondary"
+        >
+            Clear Filters
+        </a>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+
+<!-- =========================================================
+     CLAIM RECORDS
+========================================================= -->
+
+<div class="card border-0 shadow-sm">
+
+    <div class="card-header bg-white border-0 p-4">
+
+        <div class="d-flex justify-content-between align-items-center">
+
+            <div>
+
+                <h4 class="fw-bold mb-1">
+                    Claim Records
+                </h4>
+
+                <p class="text-muted mb-0">
+                    Review and manage registered claims
+                </p>
+
+            </div>
+
+            <span class="badge bg-light text-dark border px-3 py-2">
+
+                {{ filtered_count }}
+
+                Records
+
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="table-responsive">
+
+        <table class="table align-middle mb-0">
+
+            <thead class="table-light">
+
+                <tr>
+
+                    <th class="px-4">
+                        Claim ID
+                    </th>
+
+                    <th>
+                        Claim Type
+                    </th>
+
+                    <th>
+                        Claim Amount
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        ML Risk
+                    </th>
+
+                    <th>
+                        Created
+                    </th>
+
+                    <th class="text-center">
+                        Actions
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            {% for claim in claims %}
+
+                <tr>
+
+                    <!-- Claim ID -->
+
+                    <td class="px-4">
+
+                        <strong>
+                            {{ claim.get("claim_id", "N/A") }}
+                        </strong>
+
+                    </td>
+
+
+                    <!-- Claim Type -->
+
+                    <td>
+
+                        {{ claim.get(
+                            "claim_type",
+                            "N/A"
+                        ) }}
+
+                    </td>
+
+
+                    <!-- Claim Amount -->
+
+                    <td>
+
+                        ₹ {{ "{:,.2f}".format(
+                            claim.get(
+                                "claim_amount",
+                                0
+                            )|float
+                        ) }}
+
+                    </td>
+
+
+                    <!-- Status -->
+
+                    <td>
+
+                        {% set status = claim.get(
+                            "display_status",
+                            "New"
+                        ) %}
+
+                        {% if status == "New" %}
+
+                            <span class="badge bg-primary">
+                                New
+                            </span>
+
+                        {% elif status == "Under Review" %}
+
+                            <span class="badge bg-warning text-dark">
+                                Under Review
+                            </span>
+
+                        {% elif status == "Closed" %}
+
+                            <span class="badge bg-success">
+                                Closed
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-secondary">
+                                {{ status }}
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- ML Risk -->
+
+                    <td>
+
+                        {% set risk_level = claim.get(
+                            "display_risk_level",
+                            "Not Predicted"
+                        ) %}
+
+                        {% set risk_percentage = claim.get(
+                            "display_risk_percentage"
+                        ) %}
+
+
+                        {% if risk_level == "High" %}
+
+                            <span class="badge bg-danger">
+                                High
+                            </span>
+
+                            {% if risk_percentage is not none %}
+
+                                <small class="text-danger ms-1">
+                                    {{ "%.1f"|format(
+                                        risk_percentage|float
+                                    ) }}%
+                                </small>
+
+                            {% endif %}
+
+
+                        {% elif risk_level == "Medium" %}
+
+                            <span class="badge bg-warning text-dark">
+                                Medium
+                            </span>
+
+                            {% if risk_percentage is not none %}
+
+                                <small class="text-warning ms-1">
+                                    {{ "%.1f"|format(
+                                        risk_percentage|float
+                                    ) }}%
+                                </small>
+
+                            {% endif %}
+
+
+                        {% elif risk_level == "Low" %}
+
+                            <span class="badge bg-success">
+                                Low
+                            </span>
+
+                            {% if risk_percentage is not none %}
+
+                                <small class="text-success ms-1">
+                                    {{ "%.1f"|format(
+                                        risk_percentage|float
+                                    ) }}%
+                                </small>
+
+                            {% endif %}
+
+
+                        {% else %}
+
+                            <span class="text-muted">
+                                Not Predicted
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- Created -->
+
+                    <td>
+
+                        {% if claim.get(
+                            "display_created_at"
+                        ) %}
+
+                            {{
+                                claim[
+                                    "display_created_at"
+                                ].strftime(
+                                    "%d-%m-%Y"
+                                )
+                            }}
+
+                        {% else %}
+
+                            —
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- Actions -->
+
+                    <td class="text-center">
+
+                        <div
+                            class="btn-group"
+                            role="group"
+                        >
+
+                            <!-- View -->
+
+                            <a
+                                href="{{ url_for(
+                                    'claims.view_claim',
+                                    claim_id=claim['_id']
+                                ) }}"
+                                class="btn btn-sm btn-outline-primary"
+                                title="View Claim"
+                            >
+                                <i class="bi bi-eye"></i>
+                            </a>
+
+
+                            <!-- Edit -->
+
+                            <a
+                                href="{{ url_for(
+                                    'claims.edit_claim',
+                                    claim_id=claim['_id']
+                                ) }}"
+                                class="btn btn-sm btn-outline-warning"
+                                title="Edit Claim"
+                            >
+                                <i class="bi bi-pencil"></i>
+                            </a>
+
+
+                            <!-- Delete -->
+
+                            <a
+                                href="{{ url_for(
+                                    'claims.delete_claim',
+                                    claim_id=claim['_id']
+                                ) }}"
+                                class="btn btn-sm btn-outline-danger"
+                                title="Delete Claim"
+                                onclick="return confirm(
+                                    'Are you sure you want to delete this claim?'
+                                );"
+                            >
+                                <i class="bi bi-trash"></i>
+                            </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            {% else %}
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="text-center py-5"
+                    >
+
+                        <div class="text-muted">
+
+                            <i
+                                class="bi bi-inbox fs-1 d-block mb-3"
+                            ></i>
+
+                            <h5>
+                                No Claims Found
+                            </h5>
+
+                            <p class="mb-3">
+                                No claims match the selected filters.
+                            </p>
+
+                            <a
+                                href="{{ url_for(
+                                    'claims.claims_list'
+                                ) }}"
+                                class="btn btn-outline-primary"
+                            >
+                                Clear Filters
+                            </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- =====================================================
+         PAGINATION
+    ====================================================== -->
+
+    {% if total_pages > 1 %}
+
+        <div class="card-footer bg-white border-0 p-4">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div class="text-muted small">
+
+                    Page {{ page }} of {{ total_pages }}
+
+                </div>
+
+
+                <nav>
+
+                    <ul class="pagination mb-0">
+
+                        <!-- Previous -->
+
+                        <li
+                            class="page-item
+                            {% if page <= 1 %}
+                                disabled
+                            {% endif %}"
+                        >
+
+                            <a
+                                class="page-link"
+                                href="{{ url_for(
+                                    'claims.claims_list',
+                                    page=page-1,
+                                    search=search,
+                                    claim_type=selected_claim_type,
+                                    status=selected_status,
+                                    risk=selected_risk
+                                ) }}"
+                            >
+                                Previous
+                            </a>
+
+                        </li>
+
+
+                        <!-- Page Numbers -->
+
+                        {% for page_number in range(
+                            1,
+                            total_pages + 1
+                        ) %}
+
+                            {% if
+                                page_number == 1
+                                or page_number == total_pages
+                                or (
+                                    page_number >= page - 2
+                                    and page_number <= page + 2
+                                )
+                            %}
+
+                                <li
+                                    class="page-item
+                                    {% if page_number == page %}
+                                        active
+                                    {% endif %}"
+                                >
+
+                                    <a
+                                        class="page-link"
+                                        href="{{ url_for(
+                                            'claims.claims_list',
+                                            page=page_number,
+                                            search=search,
+                                            claim_type=selected_claim_type,
+                                            status=selected_status,
+                                            risk=selected_risk
+                                        ) }}"
+                                    >
+                                        {{ page_number }}
+                                    </a>
+
+                                </li>
+
+                            {% endif %}
+
+                        {% endfor %}
+
+
+                        <!-- Next -->
+
+                        <li
+                            class="page-item
+                            {% if page >= total_pages %}
+                                disabled
+                            {% endif %}"
+                        >
+
+                            <a
+                                class="page-link"
+                                href="{{ url_for(
+                                    'claims.claims_list',
+                                    page=page+1,
+                                    search=search,
+                                    claim_type=selected_claim_type,
+                                    status=selected_status,
+                                    risk=selected_risk
+                                ) }}"
+                            >
+                                Next
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </nav>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+</div>
 
 {% endblock %}

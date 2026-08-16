@@ -15,6 +15,7 @@ from dashboard import dashboard_bp
 from db import claims, users, cases, evidence
 from claims import claims_bp
 from cases import cases_bp
+from users import users_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -30,6 +31,7 @@ app.register_blueprint(cases_bp)
 app.register_blueprint(evidence_bp)
 app.register_blueprint(prediction_bp)
 app.register_blueprint(reports_bp)
+app.register_blueprint(users_bp)
 
 print("\n========= URL MAP =========")
 print(app.url_map)

@@ -1,64 +1,324 @@
 {% extends "base.html" %}
 
+{% block title %}
+Add Claim
+{% endblock %}
+
 {% block content %}
 
-<h2 class="mb-4">Add New Claim</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
 
-<form method="POST">
+    <div>
+        <h1 class="mb-1">Add New Claim</h1>
 
-    {{ form.hidden_tag() }}
+        <p class="text-muted mb-0">
+            Register a new insurance claim for fraud analysis
+        </p>
+    </div>
 
-    <div class="row">
+    <a
+        href="{{ url_for('claims.claims_list') }}"
+        class="btn btn-outline-secondary"
+    >
+        <i class="bi bi-arrow-left"></i>
+        Back to Claims
+    </a>
 
-        <div class="col-md-6 mb-3">
-            {{ form.claim_id.label }}
-            {{ form.claim_id(class="form-control") }}
+</div>
+
+
+<div class="card border-0 shadow-sm">
+
+    <div class="card-body p-4">
+
+        <div class="mb-4">
+
+            <h4 class="mb-1">
+                <i class="bi bi-file-earmark-plus text-primary"></i>
+                Claim Information
+            </h4>
+
+            <p class="text-muted mb-0">
+                Enter the claim details required for ML fraud assessment.
+            </p>
+
         </div>
 
-        <div class="col-md-6 mb-3">
-            {{ form.claim_type.label }}
-            {{ form.claim_type(class="form-control") }}
-        </div>
 
-        <div class="col-md-6 mb-3">
-            {{ form.claim_amount.label }}
-            {{ form.claim_amount(class="form-control") }}
-        </div>
+        <form method="POST">
 
-        <div class="col-md-6 mb-3">
-            {{ form.policy_limit.label }}
-            {{ form.policy_limit(class="form-control") }}
-        </div>
+            {{ form.hidden_tag() }}
 
-        <div class="col-md-6 mb-3">
-            {{ form.premium.label }}
-            {{ form.premium(class="form-control") }}
-        </div>
 
-        <div class="col-md-6 mb-3">
-            {{ form.policy_age_days.label }}
-            {{ form.policy_age_days(class="form-control") }}
-        </div>
+            <div class="row g-4">
 
-        <div class="col-md-6 mb-3">
-            {{ form.prior_claims.label }}
-            {{ form.prior_claims(class="form-control") }}
-        </div>
 
-        <div class="col-md-6 mb-3">
-            {{ form.report_delay_days.label }}
-            {{ form.report_delay_days(class="form-control") }}
-        </div>
+                <!-- Claim ID -->
 
-        <div class="col-md-6 mb-3">
-            {{ form.customer_age.label }}
-            {{ form.customer_age(class="form-control") }}
-        </div>
+                <div class="col-md-6">
+
+                    {{ form.claim_id.label(
+                        class="form-label fw-semibold"
+                    ) }}
+
+                    {{ form.claim_id(
+                        class="form-control",
+                        placeholder="Enter Claim ID"
+                    ) }}
+
+                    {% for error in form.claim_id.errors %}
+
+                        <div class="text-danger small mt-1">
+                            {{ error }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Claim Type -->
+
+                <div class="col-md-6">
+
+                    {{ form.claim_type.label(
+                        class="form-label fw-semibold"
+                    ) }}
+
+                    {{ form.claim_type(
+                        class="form-control",
+                        placeholder="Auto / Health / Property"
+                    ) }}
+
+                    {% for error in form.claim_type.errors %}
+
+                        <div class="text-danger small mt-1">
+                            {{ error }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Claim Amount -->
+
+                <div class="col-md-6">
+
+                    {{ form.claim_amount.label(
+                        class="form-label fw-semibold"
+                    ) }}
+
+                    {{ form.claim_amount(
+                        class="form-control",
+                        placeholder="Enter claim amount"
+                    ) }}
+
+                    {% for error in form.claim_amount.errors %}
+
+                        <div class="text-danger small mt-1">
+                            {{ error }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Policy Limit -->
+
+                <div class="col-md-6">
+
+                    {{ form.policy_limit.label(
+                        class="form-label fw-semibold"
+                    ) }}
+
+                    {{ form.policy_limit(
+                        class="form-control",
+                        placeholder="Enter policy limit"
+                    ) }}
+
+                    {% for error in form.policy_limit.errors %}
+
+                        <div class="text-danger small mt-1">
+                            {{ error }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Premium -->
+
+                <div class="col-md-6">
+
+                    {{ form.premium.label(
+                        class="form-label fw-semibold"
+                    ) }}
+
+                    {{ form.premium(
+                        class="form-control",
+                        placeholder="Enter premium"
+                    ) }}
+
+                    {% for error in form.premium.errors %}
+
+                        <div class="text-danger small mt-1">
+                            {{ error }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Policy Age -->
+
+                <div class="col-md-6">
+
+                    {{ form.policy_age_days.label(
+                        class="form-label fw-semibold"
+                    ) }}
+
+                    {{ form.policy_age_days(
+                        class="form-control",
+                        placeholder="Days"
+                    ) }}
+
+                    {% for error in form.policy_age_days.errors %}
+
+                        <div class="text-danger small mt-1">
+                            {{ error }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Prior Claims -->
+
+                <div class="col-md-6">
+
+                    {{ form.prior_claims.label(
+                        class="form-label fw-semibold"
+                    ) }}
+
+                    {{ form.prior_claims(
+                        class="form-control",
+                        placeholder="Number of previous claims"
+                    ) }}
+
+                    {% for error in form.prior_claims.errors %}
+
+                        <div class="text-danger small mt-1">
+                            {{ error }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Report Delay -->
+
+                <div class="col-md-6">
+
+                    {{ form.report_delay_days.label(
+                        class="form-label fw-semibold"
+                    ) }}
+
+                    {{ form.report_delay_days(
+                        class="form-control",
+                        placeholder="Days"
+                    ) }}
+
+                    {% for error in form.report_delay_days.errors %}
+
+                        <div class="text-danger small mt-1">
+                            {{ error }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Customer Age -->
+
+                <div class="col-md-6">
+
+                    {{ form.customer_age.label(
+                        class="form-label fw-semibold"
+                    ) }}
+
+                    {{ form.customer_age(
+                        class="form-control",
+                        placeholder="Customer age"
+                    ) }}
+
+                    {% for error in form.customer_age.errors %}
+
+                        <div class="text-danger small mt-1">
+                            {{ error }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Police Report -->
+
+                <div class="col-md-6">
+
+                    <div class="form-check mt-4">
+
+                        {{ form.police_report(
+                            class="form-check-input"
+                        ) }}
+
+                        {{ form.police_report.label(
+                            class="form-check-label fw-semibold"
+                        ) }}
+
+                    </div>
+
+                    <div class="form-text">
+                        Select this if a police report is available
+                        for the claim.
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <hr class="my-4">
+
+
+            <div class="d-flex gap-2">
+
+                {{ form.submit(
+                    class="btn btn-primary px-4"
+                ) }}
+
+                <a
+                    href="{{ url_for('claims.claims_list') }}"
+                    class="btn btn-outline-secondary px-4"
+                >
+                    Cancel
+                </a>
+
+            </div>
+
+
+        </form>
 
     </div>
 
-    {{ form.submit(class="btn btn-primary") }}
-
-</form>
+</div>
 
 {% endblock %}

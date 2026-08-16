@@ -22,9 +22,10 @@ from db import claims, predictions
 from model.predict_risk import predict_risk
 
 
-# ---------------------------------------
+# =========================================================
 # Fraud Prediction
-# ---------------------------------------
+# =========================================================
+
 @prediction_bp.route(
     "/prediction",
     methods=["GET", "POST"]
@@ -32,40 +33,65 @@ from model.predict_risk import predict_risk
 @login_required
 def prediction():
 
+    # -----------------------------------------------------
     # Create form
+    # -----------------------------------------------------
+
     form = PredictionForm()
 
-    # ---------------------------------------
+    # -----------------------------------------------------
     # Populate claim dropdown
-    # ---------------------------------------
+    # -----------------------------------------------------
 
     form.claim_id.choices = [
         (
             str(claim["_id"]),
-            claim.get("claim_id", str(claim["_id"]))
+            claim.get(
+                "claim_id",
+                str(claim["_id"])
+            )
         )
-        for claim in claims.find()
+        for claim in claims.find(
+            {},
+            {
+                "_id": 1,
+                "claim_id": 1
+            }
+        )
     ]
 
-    # ---------------------------------------
+    # -----------------------------------------------------
     # Process prediction
-    # ---------------------------------------
+    # -----------------------------------------------------
 
     if form.validate_on_submit():
 
-        # ---------------------------------------
+        # -------------------------------------------------
         # Get selected claim
-        # ---------------------------------------
+        # -------------------------------------------------
 
-        selected_claim = claims.find_one(
-            {
-                "_id": ObjectId(form.claim_id.data)
-            }
-        )
+        try:
 
-        # ---------------------------------------
+            selected_claim = claims.find_one(
+                {
+                    "_id": ObjectId(form.claim_id.data)
+                }
+            )
+
+        except Exception:
+
+            flash(
+                "Invalid claim selection.",
+                "danger"
+            )
+
+            return redirect(
+                url_for("prediction.prediction")
+            )
+
+        # -------------------------------------------------
         # Check claim exists
-        # ---------------------------------------
+        # -------------------------------------------------
 
         if not selected_claim:
 
@@ -78,9 +104,9 @@ def prediction():
                 url_for("prediction.prediction")
             )
 
-        # ---------------------------------------
-        # Check required ML fields
-        # ---------------------------------------
+        # -------------------------------------------------
+        # Required ML fields
+        # -------------------------------------------------
 
         required_fields = [
             "claim_amount",
@@ -88,8 +114,7 @@ def prediction():
             "premium",
             "policy_age_days",
             "report_delay_days",
-            "claim_type",
-            "police_report"
+            "claim_type"
         ]
 
         missing_fields = [
@@ -110,63 +135,101 @@ def prediction():
                 url_for("prediction.prediction")
             )
 
-        # ---------------------------------------
-        # Prepare claim for ML model
-        # ---------------------------------------
+        # -------------------------------------------------
+        # Prepare claim data for ML model
+        # -------------------------------------------------
 
         claim_data = {
 
             "claim_amount":
-                selected_claim["claim_amount"],
+                selected_claim.get(
+                    "claim_amount",
+                    0
+                ),
 
             "policy_limit":
-                selected_claim["policy_limit"],
+                selected_claim.get(
+                    "policy_limit",
+                    0
+                ),
 
             "premium":
-                selected_claim["premium"],
+                selected_claim.get(
+                    "premium",
+                    0
+                ),
 
             "policy_age_days":
-                selected_claim["policy_age_days"],
+                selected_claim.get(
+                    "policy_age_days",
+                    0
+                ),
 
             "report_delay_days":
-                selected_claim["report_delay_days"],
+                selected_claim.get(
+                    "report_delay_days",
+                    0
+                ),
 
             "claim_type":
-                selected_claim["claim_type"],
+                selected_claim.get(
+                    "claim_type",
+                    "Unknown"
+                ),
 
             "police_report":
-                selected_claim["police_report"]
+                selected_claim.get(
+                    "police_report",
+                    False
+                )
         }
 
-        # ---------------------------------------
+        # -------------------------------------------------
         # Run ML prediction
-        # ---------------------------------------
+        # -------------------------------------------------
 
-        result = predict_risk(claim_data)
+        result = predict_risk(
+            claim_data
+        )
 
-        # ---------------------------------------
+        # -------------------------------------------------
         # Save prediction to MongoDB
-        # ---------------------------------------
+        # -------------------------------------------------
 
         predictions.insert_one({
 
             "claim_id":
-                selected_claim["claim_id"],
+                selected_claim.get(
+                    "claim_id",
+                    str(selected_claim["_id"])
+                ),
 
             "claim_object_id":
                 str(selected_claim["_id"]),
 
             "risk_score":
-                result["risk_score"],
+                result.get(
+                    "risk_score",
+                    0
+                ),
 
             "risk_percentage":
-                result["risk_percentage"],
+                result.get(
+                    "risk_percentage",
+                    0
+                ),
 
             "risk_level":
-                result["risk_level"],
+                result.get(
+                    "risk_level",
+                    "Unknown"
+                ),
 
             "anomaly_score":
-                result["anomaly_score"],
+                result.get(
+                    "anomaly_score",
+                    0
+                ),
 
             "predicted_by":
                 current_user.username,
@@ -175,9 +238,9 @@ def prediction():
                 datetime.utcnow()
         })
 
-        # ---------------------------------------
-        # Display result
-        # ---------------------------------------
+        # -------------------------------------------------
+        # Display prediction result
+        # -------------------------------------------------
 
         return render_template(
             "prediction_result.html",
@@ -185,20 +248,29 @@ def prediction():
             result=result
         )
 
-    # ---------------------------------------
+    # -----------------------------------------------------
     # Display prediction page
-    # ---------------------------------------
+    # -----------------------------------------------------
 
     return render_template(
         "prediction.html",
         form=form
     )
-# ---------------------------------------
+
+
+# =========================================================
 # Prediction History
-# ---------------------------------------
-@prediction_bp.route("/prediction/history")
+# =========================================================
+
+@prediction_bp.route(
+    "/prediction/history"
+)
 @login_required
 def prediction_history():
+
+    # -----------------------------------------------------
+    # Get latest predictions first
+    # -----------------------------------------------------
 
     all_predictions = list(
         predictions.find().sort(
@@ -206,6 +278,10 @@ def prediction_history():
             -1
         )
     )
+
+    # -----------------------------------------------------
+    # Display history
+    # -----------------------------------------------------
 
     return render_template(
         "prediction_history.html",

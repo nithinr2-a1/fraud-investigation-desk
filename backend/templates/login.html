@@ -1,108 +1,452 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fraud Investigation Desk - Login</title>
+{% extends "base_login.html" %}
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+{% block title %}
+Fraud Investigation Desk - Login
+{% endblock %}
 
-<style>
-body{
-    background:#f4f6f9;
+{% block content %}
+
+<div class="login-page">
+
+    <!-- Background decoration -->
+    <div class="login-bg-shape shape-one"></div>
+    <div class="login-bg-shape shape-two"></div>
+
+    <div class="login-container">
+
+        <!-- ===================================== -->
+        <!-- LEFT BRANDING SECTION -->
+        <!-- ===================================== -->
+
+        <div class="login-brand-panel">
+
+            <div class="brand-logo-large">
+                <i class="bi bi-shield-check"></i>
+            </div>
+
+            <h1>
+                Fraud Investigation
+                <span>Desk</span>
+            </h1>
+
+            <p class="brand-description">
+                AI-powered fraud investigation,
+                risk assessment and case management.
+            </p>
+
+
+            <div class="feature-list">
+
+                <div class="feature-item">
+
+                    <div class="feature-icon">
+                        <i class="bi bi-shield-exclamation"></i>
+                    </div>
+
+                    <div>
+                        <strong>AI Fraud Detection</strong>
+
+                        <span>
+                            Identify suspicious claims using
+                            machine learning.
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <div class="feature-item">
+
+                    <div class="feature-icon">
+                        <i class="bi bi-folder-check"></i>
+                    </div>
+
+                    <div>
+                        <strong>Investigation Management</strong>
+
+                        <span>
+                            Manage cases, claims and supporting
+                            evidence.
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <div class="feature-item">
+
+                    <div class="feature-icon">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </div>
+
+                    <div>
+                        <strong>Risk Analytics</strong>
+
+                        <span>
+                            Monitor fraud risk and investigation
+                            activity.
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="security-note">
+
+                <i class="bi bi-lock-fill"></i>
+
+                <span>
+                    Secure investigation environment
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- ===================================== -->
+        <!-- LOGIN SECTION -->
+        <!-- ===================================== -->
+
+        <div class="login-form-panel">
+
+            <div class="login-card">
+
+                <!-- Mobile logo -->
+
+                <div class="mobile-brand">
+
+                    <div class="mobile-logo">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+
+                    <h2>Fraud Desk</h2>
+
+                </div>
+
+
+                <!-- Login heading -->
+
+                <div class="login-heading">
+
+                    <span class="welcome-label">
+                        WELCOME BACK
+                    </span>
+
+                    <h2>
+                        Sign in to your account
+                    </h2>
+
+                    <p>
+                        Enter your credentials to access
+                        the investigation desk.
+                    </p>
+
+                </div>
+
+
+                <!-- Flash messages -->
+
+                {% with messages = get_flashed_messages(
+                    with_categories=true
+                ) %}
+
+                    {% if messages %}
+
+                        <div class="login-alerts">
+
+                            {% for category, message in messages %}
+
+                                <div
+                                    class="login-alert
+                                    {% if category == 'danger' %}
+                                        alert-danger
+                                    {% elif category == 'success' %}
+                                        alert-success
+                                    {% else %}
+                                        alert-info
+                                    {% endif %}"
+                                >
+
+                                    <i
+                                        class="
+                                        {% if category == 'danger' %}
+                                            bi bi-exclamation-circle
+                                        {% elif category == 'success' %}
+                                            bi bi-check-circle
+                                        {% else %}
+                                            bi bi-info-circle
+                                        {% endif %}
+                                        "
+                                    ></i>
+
+                                    <span>
+                                        {{ message }}
+                                    </span>
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+                {% endwith %}
+
+
+                <!-- Login Form -->
+
+                <form
+                    method="POST"
+                    action="{{ url_for('auth.login') }}"
+                    class="login-form"
+                >
+
+                    {% if form %}
+                        {{ form.hidden_tag() }}
+                    {% endif %}
+
+
+                    <!-- Username -->
+
+                    <div class="form-group">
+
+                        <label for="username">
+                            Username
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="bi bi-person"></i>
+
+                            {% if form %}
+
+                                {{ form.username(
+                                    id="username",
+                                    class="login-input",
+                                    placeholder="Enter your username",
+                                    autocomplete="username"
+                                ) }}
+
+                            {% else %}
+
+                                <input
+                                    type="text"
+                                    id="username"
+                                    name="username"
+                                    class="login-input"
+                                    placeholder="Enter your username"
+                                    autocomplete="username"
+                                    required
+                                >
+
+                            {% endif %}
+
+                        </div>
+
+                        {% if form and form.username.errors %}
+
+                            <div class="field-error">
+
+                                {% for error in form.username.errors %}
+                                    {{ error }}
+                                {% endfor %}
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Password -->
+
+                    <div class="form-group">
+
+                        <div class="password-label-row">
+
+                            <label for="password">
+                                Password
+                            </label>
+
+                        </div>
+
+
+                        <div class="input-wrapper">
+
+                            <i class="bi bi-lock"></i>
+
+
+                            {% if form %}
+
+                                {{ form.password(
+                                    id="password",
+                                    class="login-input password-input",
+                                    placeholder="Enter your password",
+                                    autocomplete="current-password"
+                                ) }}
+
+                            {% else %}
+
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    class="login-input password-input"
+                                    placeholder="Enter your password"
+                                    autocomplete="current-password"
+                                    required
+                                >
+
+                            {% endif %}
+
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                onclick="togglePassword()"
+                                aria-label="Show password"
+                            >
+
+                                <i
+                                    id="passwordIcon"
+                                    class="bi bi-eye"
+                                ></i>
+
+                            </button>
+
+                        </div>
+
+
+                        {% if form and form.password.errors %}
+
+                            <div class="field-error">
+
+                                {% for error in form.password.errors %}
+                                    {{ error }}
+                                {% endfor %}
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Remember me -->
+
+                    {% if form and form.remember %}
+
+                        <div class="remember-row">
+
+                            <label class="remember-label">
+
+                                {{ form.remember(
+                                    class="remember-checkbox"
+                                ) }}
+
+                                <span>
+                                    Remember me
+                                </span>
+
+                            </label>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- Login button -->
+
+                    <button
+                        type="submit"
+                        class="login-button"
+                    >
+
+                        <span>
+                            Sign In
+                        </span>
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </button>
+
+
+                </form>
+
+
+                <!-- Security footer -->
+
+                <div class="login-footer">
+
+                    <div>
+
+                        <i class="bi bi-shield-lock"></i>
+
+                        <span>
+                            Protected investigation environment
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function togglePassword() {
+
+    const password =
+        document.getElementById("password");
+
+    const icon =
+        document.getElementById("passwordIcon");
+
+
+    if (!password) {
+        return;
+    }
+
+
+    if (password.type === "password") {
+
+        password.type = "text";
+
+        icon.classList.remove(
+            "bi-eye"
+        );
+
+        icon.classList.add(
+            "bi-eye-slash"
+        );
+
+    } else {
+
+        password.type = "password";
+
+        icon.classList.remove(
+            "bi-eye-slash"
+        );
+
+        icon.classList.add(
+            "bi-eye"
+        );
+
+    }
+
 }
 
-.login-card{
-    max-width:420px;
-    margin:90px auto;
-    padding:35px;
-    border-radius:12px;
-    box-shadow:0 5px 20px rgba(0,0,0,.15);
-    background:white;
-}
+</script>
 
-.logo{
-    font-size:32px;
-}
-
-.title{
-    font-weight:bold;
-    color:#16345b;
-}
-
-.subtitle{
-    color:#777;
-    font-size:14px;
-}
-</style>
-
-</head>
-
-<body>
-
-<div class="container">
-
-<div class="login-card">
-
-<div class="text-center mb-4">
-
-<div class="logo">🛡️</div>
-
-<h2 class="title">
-Fraud Investigation Desk
-</h2>
-
-<p class="subtitle">
-Secure Login
-</p>
-
-</div>
-
-<form method="POST">
-
-<div class="mb-3">
-
-<label class="form-label">
-Username
-</label>
-
-<input
-type="text"
-name="username"
-class="form-control"
-placeholder="Enter Username"
-required>
-
-</div>
-
-<div class="mb-3">
-
-<label class="form-label">
-Password
-</label>
-
-<input
-type="password"
-name="password"
-class="form-control"
-placeholder="Enter Password"
-required>
-
-</div>
-
-<div class="d-grid">
-
-<button class="btn btn-primary btn-lg">
-Login
-</button>
-
-</div>
-
-</form>
-
-</div>
-
-</div>
-
-</body>
-</html>
+{% endblock %}

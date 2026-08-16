@@ -1,148 +1,391 @@
 {% extends "base.html" %}
 
-{% block head %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-{% endblock %}
-
 {% block title %}
 Reports & Analytics
 {% endblock %}
 
 {% block content %}
 
-<div class="container-fluid">
+<style>
 
-    <!-- Page Header -->
-    <div class="mb-4">
-        <h2>Reports & Analytics</h2>
+/* ==========================================================
+   REPORT HEADER
+========================================================== */
 
-        <p class="text-muted">
-            Fraud investigation and ML prediction analytics
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 30px;
+}
+
+.report-header h2 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #14213d;
+}
+
+.report-header p {
+    color: #64748b;
+    margin: 0;
+    font-size: 16px;
+}
+
+
+/* ==========================================================
+   KPI CARDS
+========================================================== */
+
+.kpi-card {
+    background: #ffffff;
+    border: none;
+    border-radius: 16px;
+    padding: 24px;
+    height: 100%;
+    box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+    transition: all 0.2s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.10);
+}
+
+.kpi-title {
+    color: #64748b;
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.kpi-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: #14213d;
+}
+
+.kpi-description {
+    color: #64748b;
+    font-size: 13px;
+    margin-top: 8px;
+}
+
+.kpi-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.icon-blue {
+    background: #e8f0ff;
+    color: #2563eb;
+}
+
+.icon-orange {
+    background: #fff4df;
+    color: #f59e0b;
+}
+
+.icon-red {
+    background: #ffe8eb;
+    color: #dc3545;
+}
+
+.icon-green {
+    background: #e7f7ef;
+    color: #198754;
+}
+
+.icon-purple {
+    background: #f0eaff;
+    color: #6f42c1;
+}
+
+
+/* ==========================================================
+   REPORT CARDS
+========================================================== */
+
+.report-card {
+    background: #ffffff;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+    padding: 25px;
+    height: 100%;
+}
+
+.report-card-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #14213d;
+    margin-bottom: 4px;
+}
+
+.report-card-subtitle {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 20px;
+}
+
+
+/* ==========================================================
+   RISK SUMMARY
+========================================================== */
+
+.risk-summary {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 18px;
+    margin-top: 20px;
+}
+
+.risk-row {
+    margin-bottom: 15px;
+}
+
+.risk-row:last-child {
+    margin-bottom: 0;
+}
+
+.risk-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 14px;
+}
+
+.risk-progress {
+    height: 8px;
+    border-radius: 20px;
+    background: #e2e8f0;
+    overflow: hidden;
+}
+
+.risk-high {
+    background: #dc3545;
+}
+
+.risk-medium {
+    background: #f59e0b;
+}
+
+.risk-low {
+    background: #198754;
+}
+
+
+/* ==========================================================
+   STATUS BOX
+========================================================== */
+
+.status-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 18px;
+    border-radius: 12px;
+    background: #f8fafc;
+    margin-bottom: 12px;
+}
+
+.status-name {
+    font-weight: 600;
+    color: #334155;
+}
+
+.status-count {
+    font-weight: 700;
+    font-size: 18px;
+}
+
+
+/* ==========================================================
+   CHART
+========================================================== */
+
+.chart-container {
+    position: relative;
+    height: 300px;
+}
+
+
+/* ==========================================================
+   ANALYTICS BADGE
+========================================================== */
+
+.analytics-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: 1px solid #dbe3ef;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+/* ==========================================================
+   MODEL METRIC CARDS
+========================================================== */
+
+.model-metric {
+    padding: 22px;
+    border-radius: 12px;
+    height: 100%;
+}
+
+.model-metric-title {
+    color: #64748b;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.model-metric-value {
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.model-metric-description {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 5px;
+}
+
+
+/* ==========================================================
+   CONFUSION MATRIX
+========================================================== */
+
+.confusion-table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.confusion-table th {
+    background: #1e3a5f;
+    color: #ffffff;
+    font-weight: 600;
+    text-align: center;
+    padding: 14px;
+}
+
+.confusion-table td {
+    text-align: center;
+    padding: 16px;
+    vertical-align: middle;
+}
+
+.cm-value {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.cm-label {
+    display: block;
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 3px;
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 768px) {
+
+    .report-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .report-header h2 {
+        font-size: 26px;
+    }
+
+    .chart-container {
+        height: 250px;
+    }
+
+}
+
+</style>
+
+
+<!-- ==========================================================
+     PAGE HEADER
+========================================================== -->
+
+<div class="report-header">
+
+    <div>
+
+        <h2>
+            Reports & Analytics
+        </h2>
+
+        <p>
+            Fraud investigation and machine learning analytics
         </p>
-    </div>
-
-
-    <!-- Summary Cards -->
-    <div class="row g-4 mb-4">
-
-        <!-- Total Claims -->
-        <div class="col-md-4">
-            <div class="card shadow-sm p-4 text-center h-100">
-
-                <h5>Total Claims</h5>
-
-                <h2 class="text-primary">
-                    {{ total_claims }}
-                </h2>
-
-            </div>
-        </div>
-
-
-        <!-- Total Cases -->
-        <div class="col-md-4">
-            <div class="card shadow-sm p-4 text-center h-100">
-
-                <h5>Total Cases</h5>
-
-                <h2 class="text-primary">
-                    {{ total_cases }}
-                </h2>
-
-            </div>
-        </div>
-
-
-        <!-- Open Cases -->
-        <div class="col-md-4">
-            <div class="card shadow-sm p-4 text-center h-100">
-
-                <h5>Open Cases</h5>
-
-                <h2 class="text-warning">
-                    {{ open_cases }}
-                </h2>
-
-            </div>
-        </div>
-
-
-        <!-- Total Evidence -->
-        <div class="col-md-4">
-            <div class="card shadow-sm p-4 text-center h-100">
-
-                <h5>Total Evidence</h5>
-
-                <h2 class="text-info">
-                    {{ total_evidence }}
-                </h2>
-
-            </div>
-        </div>
-
-
-        <!-- ML Predictions -->
-        <div class="col-md-4">
-            <div class="card shadow-sm p-4 text-center h-100">
-
-                <h5>ML Predictions</h5>
-
-                <h2 class="text-primary">
-                    {{ total_predictions }}
-                </h2>
-
-            </div>
-        </div>
-
-
-        <!-- High Risk -->
-        <div class="col-md-4">
-            <div class="card shadow-sm p-4 text-center h-100">
-
-                <h5>High Risk</h5>
-
-                <h2 class="text-danger">
-                    {{ high_risk }}
-                </h2>
-
-            </div>
-        </div>
 
     </div>
 
 
-    <!-- Charts -->
-    <div class="row g-4 mb-4">
+    <div class="analytics-badge">
 
-        <!-- Risk Distribution -->
-        <div class="col-md-6">
+        <i class="bi bi-bar-chart-line"></i>
 
-            <div class="card shadow-sm p-4">
+        Analytics Dashboard
 
-                <h4 class="text-center mb-3">
-                    ML Risk Distribution
-                </h4>
+    </div>
 
-                <div style="height: 350px;">
-                    <canvas id="riskDistributionChart"></canvas>
+</div>
+
+
+
+<!-- ==========================================================
+     KPI CARDS
+========================================================== -->
+
+<div class="row g-4 mb-4">
+
+
+    <!-- Total Claims -->
+
+    <div class="col-xl-4 col-md-6">
+
+        <div class="kpi-card">
+
+            <div class="d-flex justify-content-between">
+
+                <div>
+
+                    <div class="kpi-title">
+                        Total Claims
+                    </div>
+
+                    <div class="kpi-value">
+                        {{ total_claims }}
+                    </div>
+
+                    <div class="kpi-description">
+                        Claims registered in the system
+                    </div>
+
                 </div>
 
-            </div>
+                <div class="kpi-icon icon-blue">
 
-        </div>
+                    <i class="bi bi-file-earmark-text"></i>
 
-
-        <!-- Recent Claim Risk Scores -->
-        <div class="col-md-6">
-
-            <div class="card shadow-sm p-4">
-
-                <h4 class="text-center mb-3">
-                    Recent Claim Risk Scores
-                </h4>
-
-                <div style="height: 350px;">
-                    <canvas id="riskScoresChart"></canvas>
                 </div>
 
             </div>
@@ -152,59 +395,201 @@ Reports & Analytics
     </div>
 
 
-    <!-- ML Risk Summary -->
-    <div class="row g-4 mb-4">
+    <!-- Total Cases -->
 
-        <div class="col-12">
+    <div class="col-xl-4 col-md-6">
 
-            <div class="card shadow-sm p-4">
+        <div class="kpi-card">
 
-                <h4 class="text-center mb-4">
-                    ML Risk Summary
-                </h4>
+            <div class="d-flex justify-content-between">
 
-                <div class="row text-center">
+                <div>
 
-                    <!-- High Risk -->
-                    <div class="col-md-4">
+                    <div class="kpi-title">
+                        Total Cases
+                    </div>
 
-                        <h5 class="text-danger">
-                            High Risk
-                        </h5>
+                    <div class="kpi-value">
+                        {{ total_cases }}
+                    </div>
 
-                        <h2 class="text-danger">
-                            {{ high_risk }}
-                        </h2>
+                    <div class="kpi-description">
+                        Fraud investigation cases
+                    </div>
+
+                </div>
+
+                <div class="kpi-icon icon-purple">
+
+                    <i class="bi bi-folder"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Open Cases -->
+
+    <div class="col-xl-4 col-md-6">
+
+        <div class="kpi-card">
+
+            <div class="d-flex justify-content-between">
+
+                <div>
+
+                    <div class="kpi-title">
+                        Open Cases
+                    </div>
+
+                    <div
+                        class="kpi-value"
+                        style="color:#f59e0b;"
+                    >
+
+                        {{ open_cases }}
 
                     </div>
 
+                    <div class="kpi-description">
+                        Investigations currently active
+                    </div>
 
-                    <!-- Medium Risk -->
-                    <div class="col-md-4">
+                </div>
 
-                        <h5 class="text-warning">
-                            Medium Risk
-                        </h5>
+                <div class="kpi-icon icon-orange">
 
-                        <h2 class="text-warning">
-                            {{ medium_risk }}
-                        </h2>
+                    <i class="bi bi-clock-history"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Total Evidence -->
+
+    <div class="col-xl-4 col-md-6">
+
+        <div class="kpi-card">
+
+            <div class="d-flex justify-content-between">
+
+                <div>
+
+                    <div class="kpi-title">
+                        Total Evidence
+                    </div>
+
+                    <div
+                        class="kpi-value"
+                        style="color:#0ea5e9;"
+                    >
+
+                        {{ total_evidence }}
 
                     </div>
 
+                    <div class="kpi-description">
+                        Supporting investigation files
+                    </div>
 
-                    <!-- Low Risk -->
-                    <div class="col-md-4">
+                </div>
 
-                        <h5 class="text-success">
-                            Low Risk
-                        </h5>
+                <div class="kpi-icon icon-blue">
 
-                        <h2 class="text-success">
-                            {{ low_risk }}
-                        </h2>
+                    <i class="bi bi-paperclip"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ML Predictions -->
+
+    <div class="col-xl-4 col-md-6">
+
+        <div class="kpi-card">
+
+            <div class="d-flex justify-content-between">
+
+                <div>
+
+                    <div class="kpi-title">
+                        ML Predictions
+                    </div>
+
+                    <div
+                        class="kpi-value"
+                        style="color:#6f42c1;"
+                    >
+
+                        {{ total_predictions }}
 
                     </div>
+
+                    <div class="kpi-description">
+                        Fraud risk assessments
+                    </div>
+
+                </div>
+
+                <div class="kpi-icon icon-purple">
+
+                    <i class="bi bi-cpu"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- High Risk -->
+
+    <div class="col-xl-4 col-md-6">
+
+        <div class="kpi-card">
+
+            <div class="d-flex justify-content-between">
+
+                <div>
+
+                    <div class="kpi-title">
+                        High Risk
+                    </div>
+
+                    <div
+                        class="kpi-value"
+                        style="color:#dc3545;"
+                    >
+
+                        {{ high_risk }}
+
+                    </div>
+
+                    <div class="kpi-description">
+                        Claims requiring attention
+                    </div>
+
+                </div>
+
+                <div class="kpi-icon icon-red">
+
+                    <i class="bi bi-exclamation-triangle"></i>
 
                 </div>
 
@@ -217,301 +602,1041 @@ Reports & Analytics
 </div>
 
 
-<!-- ========================================================= -->
-<!-- DATA PROVIDED BY FLASK / JINJA                            -->
-<!-- ========================================================= -->
 
-<script id="report-data" type="application/json">
-{
-    "high_risk": {{ high_risk | tojson }},
-    "medium_risk": {{ medium_risk | tojson }},
-    "low_risk": {{ low_risk | tojson }},
-    "chart_labels": {{ chart_labels | tojson }},
-    "chart_values": {{ chart_values | tojson }}
-}
-</script>
+<!-- ==========================================================
+     ML RISK OVERVIEW + CASE STATUS
+========================================================== -->
+
+<div class="row g-4 mb-4">
 
 
-<!-- ========================================================= -->
-<!-- CHART.JS                                                  -->
-<!-- ========================================================= -->
+    <!-- ML Risk Overview -->
+
+    <div class="col-lg-8">
+
+        <div class="report-card">
+
+            <div class="report-card-title">
+                ML Risk Overview
+            </div>
+
+            <div class="report-card-subtitle">
+                Distribution of fraud risk assessments generated by the ML model.
+            </div>
+
+
+            <div class="risk-summary">
+
+
+                <!-- HIGH -->
+
+                <div class="risk-row">
+
+                    <div class="risk-label">
+
+                        <span>
+
+                            <i class="bi bi-exclamation-circle text-danger"></i>
+
+                            High Risk
+
+                        </span>
+
+                        <strong>
+
+                            {{ high_risk }}
+
+                            ({{ high_risk_percentage }}%)
+
+                        </strong>
+
+                    </div>
+
+
+                    <div class="risk-progress">
+
+                        <div
+                            class="risk-high"
+                            style="
+                                width: {{ high_risk_percentage }}%;
+                                height:100%;
+                            "
+                        ></div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- MEDIUM -->
+
+                <div class="risk-row">
+
+                    <div class="risk-label">
+
+                        <span>
+
+                            <i class="bi bi-dash-circle text-warning"></i>
+
+                            Medium Risk
+
+                        </span>
+
+                        <strong>
+
+                            {{ medium_risk }}
+
+                            ({{ medium_risk_percentage }}%)
+
+                        </strong>
+
+                    </div>
+
+
+                    <div class="risk-progress">
+
+                        <div
+                            class="risk-medium"
+                            style="
+                                width: {{ medium_risk_percentage }}%;
+                                height:100%;
+                            "
+                        ></div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- LOW -->
+
+                <div class="risk-row">
+
+                    <div class="risk-label">
+
+                        <span>
+
+                            <i class="bi bi-check-circle text-success"></i>
+
+                            Low Risk
+
+                        </span>
+
+                        <strong>
+
+                            {{ low_risk }}
+
+                            ({{ low_risk_percentage }}%)
+
+                        </strong>
+
+                    </div>
+
+
+                    <div class="risk-progress">
+
+                        <div
+                            class="risk-low"
+                            style="
+                                width: {{ low_risk_percentage }}%;
+                                height:100%;
+                            "
+                        ></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CASE STATUS -->
+
+    <div class="col-lg-4">
+
+        <div class="report-card">
+
+            <div class="report-card-title">
+                Case Status
+            </div>
+
+            <div class="report-card-subtitle">
+                Current investigation workload
+            </div>
+
+
+            <div class="status-box">
+
+                <span class="status-name">
+
+                    <i class="bi bi-folder2-open text-primary me-2"></i>
+
+                    Open Cases
+
+                </span>
+
+                <span class="status-count text-primary">
+
+                    {{ open_cases }}
+
+                </span>
+
+            </div>
+
+
+            <div class="status-box">
+
+                <span class="status-name">
+
+                    <i class="bi bi-check-circle text-success me-2"></i>
+
+                    Closed Cases
+
+                </span>
+
+                <span class="status-count text-success">
+
+                    {{ closed_cases }}
+
+                </span>
+
+            </div>
+
+
+            <div class="status-box">
+
+                <span class="status-name">
+
+                    <i class="bi bi-folder text-secondary me-2"></i>
+
+                    Total Cases
+
+                </span>
+
+                <span class="status-count">
+
+                    {{ total_cases }}
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ==========================================================
+     MODEL PERFORMANCE
+========================================================== -->
+
+<div class="report-card mb-4">
+
+
+    <div class="d-flex justify-content-between align-items-start mb-4">
+
+        <div>
+
+            <div class="report-card-title">
+                ML Model Performance
+            </div>
+
+            <div class="report-card-subtitle mb-0">
+                Evaluation results for the Isolation Forest fraud detection model
+            </div>
+
+        </div>
+
+
+        <span class="badge bg-primary px-3 py-2">
+
+            <i class="bi bi-cpu me-1"></i>
+
+            Isolation Forest
+
+        </span>
+
+    </div>
+
+
+
+    <!-- METRIC CARDS -->
+
+    <div class="row g-3">
+
+
+        <!-- Accuracy -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div
+                class="model-metric"
+                style="background:#eef5ff;"
+            >
+
+                <div class="model-metric-title">
+                    Accuracy
+                </div>
+
+                <div
+                    class="model-metric-value text-primary"
+                >
+
+                    {{ "%.2f"|format(accuracy) }}%
+
+                </div>
+
+                <div class="model-metric-description">
+                    Overall classification accuracy
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Precision -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div
+                class="model-metric"
+                style="background:#f3efff;"
+            >
+
+                <div class="model-metric-title">
+                    Precision
+                </div>
+
+                <div
+                    class="model-metric-value"
+                    style="color:#6f42c1;"
+                >
+
+                    {{ "%.2f"|format(precision) }}%
+
+                </div>
+
+                <div class="model-metric-description">
+                    Correct fraud predictions
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Recall -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div
+                class="model-metric"
+                style="background:#fff5e6;"
+            >
+
+                <div class="model-metric-title">
+                    Recall
+                </div>
+
+                <div
+                    class="model-metric-value text-warning"
+                >
+
+                    {{ "%.2f"|format(recall) }}%
+
+                </div>
+
+                <div class="model-metric-description">
+                    Fraud detection rate
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- F1 Score -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div
+                class="model-metric"
+                style="background:#eaf8f1;"
+            >
+
+                <div class="model-metric-title">
+                    F1-Score
+                </div>
+
+                <div
+                    class="model-metric-value text-success"
+                >
+
+                    {{ "%.2f"|format(f1_score) }}%
+
+                </div>
+
+                <div class="model-metric-description">
+                    Precision-recall balance
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ======================================================
+         CONFUSION MATRIX
+    ======================================================= -->
+
+    <div class="mt-5">
+
+        <h5 class="fw-bold mb-3">
+            Confusion Matrix
+        </h5>
+
+        <p class="text-muted small">
+            Classification results from the evaluated Isolation Forest model.
+        </p>
+
+
+        <div class="table-responsive">
+
+            <table
+                class="table table-bordered confusion-table"
+            >
+
+                <thead>
+
+                    <tr>
+
+                        <th></th>
+
+                        <th>
+                            Predicted: Genuine
+                        </th>
+
+                        <th>
+                            Predicted: Fraud
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                    <!-- Actual Genuine -->
+
+                    <tr>
+
+                        <th class="text-dark bg-light">
+                            Actual: Genuine
+                        </th>
+
+
+                        <!-- True Negative -->
+
+                        <td
+                            style="
+                                background:#e8f0ff;
+                                color:#1e40af;
+                            "
+                        >
+
+                            <span class="cm-value">
+                                {{ true_negative }}
+                            </span>
+
+                            <span class="cm-label">
+                                True Negative
+                            </span>
+
+                        </td>
+
+
+                        <!-- False Positive -->
+
+                        <td
+                            style="
+                                background:#ffe8eb;
+                                color:#b91c1c;
+                            "
+                        >
+
+                            <span class="cm-value">
+                                {{ false_positive }}
+                            </span>
+
+                            <span class="cm-label">
+                                False Positive
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- Actual Fraud -->
+
+                    <tr>
+
+                        <th class="text-dark bg-light">
+                            Actual: Fraud
+                        </th>
+
+
+                        <!-- False Negative -->
+
+                        <td
+                            style="
+                                background:#fff4df;
+                                color:#b45309;
+                            "
+                        >
+
+                            <span class="cm-value">
+                                {{ false_negative }}
+                            </span>
+
+                            <span class="cm-label">
+                                False Negative
+                            </span>
+
+                        </td>
+
+
+                        <!-- True Positive -->
+
+                        <td
+                            style="
+                                background:#e7f7ef;
+                                color:#047857;
+                            "
+                        >
+
+                            <span class="cm-value">
+                                {{ true_positive }}
+                            </span>
+
+                            <span class="cm-label">
+                                True Positive
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ======================================================
+         ADDITIONAL METRICS
+    ======================================================= -->
+
+    <div class="row mt-3">
+
+
+        <!-- Specificity -->
+
+        <div class="col-md-6">
+
+            <div class="status-box">
+
+                <span class="status-name">
+
+                    <i class="bi bi-shield-check text-success me-2"></i>
+
+                    Specificity
+
+                </span>
+
+                <span class="status-count text-success">
+
+                    {{ "%.2f"|format(specificity) }}%
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Evaluation Samples -->
+
+        <div class="col-md-6">
+
+            <div class="status-box">
+
+                <span class="status-name">
+
+                    <i class="bi bi-database me-2"></i>
+
+                    Evaluation Samples
+
+                </span>
+
+                <span class="status-count">
+
+                    {{
+                        true_negative
+                        + false_positive
+                        + false_negative
+                        + true_positive
+                    }}
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ==========================================================
+     CHARTS - ROW 1
+========================================================== -->
+
+<div class="row g-4 mb-4">
+
+
+    <!-- ML Risk Distribution -->
+
+    <div class="col-lg-6">
+
+        <div class="report-card">
+
+            <div class="report-card-title">
+                ML Risk Distribution
+            </div>
+
+            <div class="report-card-subtitle">
+                High, medium and low fraud risk assessments
+            </div>
+
+
+            <div class="chart-container">
+
+                <canvas id="riskChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Recent Risk Scores -->
+
+    <div class="col-lg-6">
+
+        <div class="report-card">
+
+            <div class="report-card-title">
+                Recent Risk Scores
+            </div>
+
+            <div class="report-card-subtitle">
+                Latest 10 ML fraud risk predictions
+            </div>
+
+
+            <div class="chart-container">
+
+                <canvas id="recentRiskChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ==========================================================
+     CHARTS - ROW 2
+========================================================== -->
+
+<div class="row g-4 mb-5">
+
+
+    <!-- Claim Type -->
+
+    <div class="col-lg-6">
+
+        <div class="report-card">
+
+            <div class="report-card-title">
+                Claim Type Distribution
+            </div>
+
+            <div class="report-card-subtitle">
+                Distribution of registered insurance claims
+            </div>
+
+
+            <div class="chart-container">
+
+                <canvas id="claimTypeChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Case Status -->
+
+    <div class="col-lg-6">
+
+        <div class="report-card">
+
+            <div class="report-card-title">
+                Case Status Distribution
+            </div>
+
+            <div class="report-card-subtitle">
+                Current status of investigation cases
+            </div>
+
+
+            <div class="chart-container">
+
+                <canvas id="caseStatusChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ==========================================================
+     CHART.JS
+========================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
 <script>
 
-    // Read data generated by Flask/Jinja
-    const reportData = JSON.parse(
-        document.getElementById("report-data").textContent
-    );
 
+/* ==========================================================
+   ML RISK DISTRIBUTION
+========================================================== */
 
-    // =========================================================
-    // ML RISK DISTRIBUTION
-    // =========================================================
+new Chart(
+    document.getElementById("riskChart"),
+    {
 
-    const riskDistributionCanvas =
-        document.getElementById("riskDistributionChart");
+        type: "doughnut",
 
-    if (riskDistributionCanvas) {
+        data: {
 
-        new Chart(riskDistributionCanvas, {
+            labels: [
+                "High Risk",
+                "Medium Risk",
+                "Low Risk"
+            ],
 
-            type: "doughnut",
+            datasets: [
 
-            data: {
-
-                labels: [
-                    "High Risk",
-                    "Medium Risk",
-                    "Low Risk"
-                ],
-
-                datasets: [{
-
-                    label: "Risk Distribution",
+                {
 
                     data: [
-                        reportData.high_risk,
-                        reportData.medium_risk,
-                        reportData.low_risk
-                    ]
 
-                }]
+                        {{ high_risk }},
+                        {{ medium_risk }},
+                        {{ low_risk }}
 
-            },
+                    ],
 
-            options: {
+                    backgroundColor: [
 
-                responsive: true,
+                        "#dc3545",
+                        "#f59e0b",
+                        "#198754"
 
-                maintainAspectRatio: false,
+                    ],
 
-                plugins: {
-
-                    legend: {
-                        position: "bottom"
-                    }
+                    borderWidth: 0
 
                 }
 
-            }
+            ]
 
-        });
+        },
 
-    }
+        options: {
 
+            responsive: true,
 
-    // =========================================================
-    // RECENT CLAIM RISK SCORES
-    // =========================================================
+            maintainAspectRatio: false,
 
-    const riskScoresCanvas =
-        document.getElementById("riskScoresChart");
+            plugins: {
 
-    if (riskScoresCanvas) {
+                legend: {
 
-        new Chart(riskScoresCanvas, {
+                    position: "bottom"
 
-            type: "bar",
-
-            data: {
-
-                labels: reportData.chart_labels,
-
-                datasets: [{
-
-                    label: "Risk Percentage",
-
-                    data: reportData.chart_values
-
-                }]
+                }
 
             },
 
-            options: {
+            cutout: "65%"
 
-                responsive: true,
+        }
 
-                maintainAspectRatio: false,
+    }
+);
 
-                scales: {
 
-                    y: {
 
-                        beginAtZero: true,
+/* ==========================================================
+   RECENT RISK SCORES
+========================================================== */
 
-                        max: 100,
+new Chart(
+    document.getElementById("recentRiskChart"),
+    {
 
-                        title: {
+        type: "bar",
 
-                            display: true,
+        data: {
 
-                            text: "Risk %"
+            labels: {{ chart_labels | tojson }},
+
+            datasets: [
+
+                {
+
+                    label: "Risk %",
+
+                    data: {{ chart_values | tojson }},
+
+                    backgroundColor: "#60a5fa",
+
+                    borderRadius: 6,
+
+                    borderSkipped: false
+
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true,
+
+                    max: 100,
+
+                    ticks: {
+
+                        callback: function(value) {
+
+                            return value + "%";
 
                         }
 
                     }
 
-                },
-
-                plugins: {
-
-                    legend: {
-
-                        display: true
-
-                    }
-
                 }
 
-            }
-
-        });
-
-    }
-
-</script>
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-
-<!-- Flask/Jinja report data -->
-<script id="report-data" type="application/json">
-{
-    "high_risk": {{ high_risk | tojson }},
-    "medium_risk": {{ medium_risk | tojson }},
-    "low_risk": {{ low_risk | tojson }},
-    "chart_labels": {{ chart_labels | tojson }},
-    "chart_values": {{ chart_values | tojson }}
-}
-</script>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-    console.log("Reports page loaded");
-
-    // Check Chart.js
-    if (typeof Chart === "undefined") {
-        console.error("Chart.js is NOT loaded.");
-        return;
-    }
-
-    console.log("Chart.js loaded:", Chart.version);
-
-    // Read Flask data
-    const dataElement = document.getElementById("report-data");
-
-    if (!dataElement) {
-        console.error("report-data element not found.");
-        return;
-    }
-
-    const reportData = JSON.parse(dataElement.textContent);
-
-    console.log("Report data:", reportData);
-
-
-    // =====================================================
-    // ML RISK DISTRIBUTION
-    // =====================================================
-
-    const riskCanvas =
-        document.getElementById("riskDistributionChart");
-
-    if (!riskCanvas) {
-        console.error("riskDistributionChart canvas not found.");
-    } else {
-
-        new Chart(riskCanvas, {
-
-            type: "doughnut",
-
-            data: {
-                labels: [
-                    "High Risk",
-                    "Medium Risk",
-                    "Low Risk"
-                ],
-
-                datasets: [{
-                    label: "Risk Distribution",
-
-                    data: [
-                        Number(reportData.high_risk),
-                        Number(reportData.medium_risk),
-                        Number(reportData.low_risk)
-                    ]
-                }]
             },
 
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
+            plugins: {
 
-                plugins: {
-                    legend: {
-                        position: "bottom"
-                    }
+                legend: {
+
+                    display: false
+
                 }
+
             }
-        });
 
-        console.log("Risk distribution chart created.");
+        }
+
     }
+);
 
 
-    // =====================================================
-    // RECENT CLAIM RISK SCORES
-    // =====================================================
 
-    const scoresCanvas =
-        document.getElementById("riskScoresChart");
+/* ==========================================================
+   CLAIM TYPE DISTRIBUTION
+========================================================== */
 
-    if (!scoresCanvas) {
-        console.error("riskScoresChart canvas not found.");
-    } else {
+new Chart(
+    document.getElementById("claimTypeChart"),
+    {
 
-        new Chart(scoresCanvas, {
+        type: "doughnut",
 
-            type: "bar",
+        data: {
 
-            data: {
-                labels: reportData.chart_labels,
+            labels: {{ claim_type_labels | tojson }},
 
-                datasets: [{
-                    label: "Risk Percentage",
+            datasets: [
 
-                    data: reportData.chart_values
-                }]
+                {
+
+                    data: {{ claim_type_values | tojson }},
+
+                    backgroundColor: [
+
+                        "#2563eb",
+                        "#7c3aed",
+                        "#0ea5e9",
+                        "#f59e0b",
+                        "#10b981",
+                        "#ef4444"
+
+                    ],
+
+                    borderWidth: 0
+
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+
+                    position: "bottom"
+
+                }
+
             },
 
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
+            cutout: "60%"
 
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
+        }
 
-                        title: {
-                            display: true,
-                            text: "Risk %"
-                        }
-                    }
-                },
-
-                plugins: {
-                    legend: {
-                        display: true
-                    }
-                }
-            }
-        });
-
-        console.log("Risk scores chart created.");
     }
+);
 
-});
+
+
+/* ==========================================================
+   CASE STATUS DISTRIBUTION
+========================================================== */
+
+new Chart(
+    document.getElementById("caseStatusChart"),
+    {
+
+        type: "bar",
+
+        data: {
+
+            labels: {{ case_status_labels | tojson }},
+
+            datasets: [
+
+                {
+
+                    label: "Cases",
+
+                    data: {{ case_status_values | tojson }},
+
+                    backgroundColor: "#6366f1",
+
+                    borderRadius: 6,
+
+                    borderSkipped: false
+
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true,
+
+                    ticks: {
+
+                        precision: 0
+
+                    }
+
+                }
+
+            },
+
+            plugins: {
+
+                legend: {
+
+                    display: false
+
+                }
+
+            }
+
+        }
+
+    }
+);
+
 </script>
+
 
 {% endblock %}

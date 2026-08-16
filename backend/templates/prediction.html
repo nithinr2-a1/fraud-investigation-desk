@@ -6,40 +6,164 @@ Fraud Prediction
 
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="page-header mb-4">
 
-    <h2>Fraud Prediction</h2>
+    <div>
+        <h1 class="fw-bold mb-1">
+            Fraud Prediction
+        </h1>
+
+        <p class="text-muted mb-0">
+            AI-powered fraud risk analysis and claim assessment
+        </p>
+    </div>
 
 </div>
 
-<div class="card shadow">
 
-    <div class="card-body">
+<!-- ========================================================= -->
+<!-- AI Prediction Introduction -->
+<!-- ========================================================= -->
 
-        <h5 class="card-title mb-4">
-            Select a Claim for Fraud Risk Analysis
-        </h5>
+<div class="card border-0 shadow-sm mb-4">
+
+    <div class="card-body p-4">
+
+        <div class="row align-items-center">
+
+            <div class="col-md-8">
+
+                <div class="d-flex align-items-center mb-3">
+
+                    <div
+                        class="d-flex align-items-center justify-content-center rounded-3 me-3"
+                        style="
+                            width:52px;
+                            height:52px;
+                            background:#e8f0ff;
+                            color:#2563eb;
+                            font-size:24px;
+                        "
+                    >
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+
+                    <div>
+
+                        <h4 class="fw-bold mb-1">
+                            AI Fraud Risk Assessment
+                        </h4>
+
+                        <p class="text-muted mb-0">
+                            Select an insurance claim to generate an AI-based
+                            fraud risk prediction.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="small text-muted">
+
+                    <i class="bi bi-info-circle me-1"></i>
+
+                    The prediction is generated using the fraud detection
+                    model configured in the application.
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+
+                <span
+                    class="badge rounded-pill px-3 py-2"
+                    style="
+                        background:#eef4ff;
+                        color:#2563eb;
+                        font-size:13px;
+                    "
+                >
+                    <i class="bi bi-cpu me-1"></i>
+                    AI Analysis Ready
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ========================================================= -->
+<!-- Claim Selection -->
+<!-- ========================================================= -->
+
+<div class="card border-0 shadow-sm mb-4">
+
+    <div class="card-body p-4">
+
+        <div class="d-flex align-items-center mb-4">
+
+            <div
+                class="d-flex align-items-center justify-content-center rounded-3 me-3"
+                style="
+                    width:44px;
+                    height:44px;
+                    background:#f1f5f9;
+                    color:#334155;
+                    font-size:20px;
+                "
+            >
+                <i class="bi bi-file-earmark-text"></i>
+            </div>
+
+            <div>
+
+                <h5 class="fw-bold mb-1">
+                    Select Claim
+                </h5>
+
+                <p class="text-muted mb-0">
+                    Choose a claim for fraud risk evaluation
+                </p>
+
+            </div>
+
+        </div>
+
 
         <form method="POST">
 
             {{ form.hidden_tag() }}
 
+
             <div class="mb-4">
 
                 {{ form.claim_id.label(
-                    class="form-label"
+                    class="form-label fw-semibold"
                 ) }}
 
                 {{ form.claim_id(
-                    class="form-select"
+                    class="form-select form-select-lg"
                 ) }}
 
                 {% if form.claim_id.errors %}
 
-                    <div class="text-danger mt-2">
+                    <div class="alert alert-danger mt-3 mb-0">
+
+                        <i class="bi bi-exclamation-triangle me-2"></i>
 
                         {% for error in form.claim_id.errors %}
-                            <div>{{ error }}</div>
+
+                            <div>
+                                {{ error }}
+                            </div>
+
                         {% endfor %}
 
                     </div>
@@ -48,10 +172,11 @@ Fraud Prediction
 
             </div>
 
-            <div>
+
+            <div class="d-flex justify-content-end">
 
                 {{ form.submit(
-                    class="btn btn-primary"
+                    class="btn btn-primary btn-lg px-4"
                 ) }}
 
             </div>
@@ -61,5 +186,173 @@ Fraud Prediction
     </div>
 
 </div>
+
+
+
+<!-- ========================================================= -->
+<!-- How Prediction Works -->
+<!-- ========================================================= -->
+
+<div class="card border-0 shadow-sm">
+
+    <div class="card-body p-4">
+
+        <div class="d-flex align-items-center mb-4">
+
+            <div
+                class="d-flex align-items-center justify-content-center rounded-3 me-3"
+                style="
+                    width:44px;
+                    height:44px;
+                    background:#fff7ed;
+                    color:#f59e0b;
+                    font-size:20px;
+                "
+            >
+                <i class="bi bi-diagram-3"></i>
+            </div>
+
+            <div>
+
+                <h5 class="fw-bold mb-1">
+                    Fraud Analysis Workflow
+                </h5>
+
+                <p class="text-muted mb-0">
+                    The selected claim will be processed through the
+                    fraud detection workflow.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-3">
+
+            <!-- Step 1 -->
+
+            <div class="col-md-4">
+
+                <div
+                    class="p-3 rounded-3 h-100"
+                    style="background:#f8fafc;"
+                >
+
+                    <div class="d-flex align-items-center mb-2">
+
+                        <span
+                            class="d-flex align-items-center justify-content-center rounded-circle me-2"
+                            style="
+                                width:32px;
+                                height:32px;
+                                background:#e8f0ff;
+                                color:#2563eb;
+                                font-weight:600;
+                            "
+                        >
+                            1
+                        </span>
+
+                        <strong>
+                            Claim Selection
+                        </strong>
+
+                    </div>
+
+                    <p class="text-muted small mb-0">
+                        Select the claim that requires fraud risk analysis.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Step 2 -->
+
+            <div class="col-md-4">
+
+                <div
+                    class="p-3 rounded-3 h-100"
+                    style="background:#f8fafc;"
+                >
+
+                    <div class="d-flex align-items-center mb-2">
+
+                        <span
+                            class="d-flex align-items-center justify-content-center rounded-circle me-2"
+                            style="
+                                width:32px;
+                                height:32px;
+                                background:#fff7ed;
+                                color:#f59e0b;
+                                font-weight:600;
+                            "
+                        >
+                            2
+                        </span>
+
+                        <strong>
+                            AI Processing
+                        </strong>
+
+                    </div>
+
+                    <p class="text-muted small mb-0">
+                        Claim attributes are evaluated by the fraud prediction
+                        model.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Step 3 -->
+
+            <div class="col-md-4">
+
+                <div
+                    class="p-3 rounded-3 h-100"
+                    style="background:#f8fafc;"
+                >
+
+                    <div class="d-flex align-items-center mb-2">
+
+                        <span
+                            class="d-flex align-items-center justify-content-center rounded-circle me-2"
+                            style="
+                                width:32px;
+                                height:32px;
+                                background:#ecfdf5;
+                                color:#059669;
+                                font-weight:600;
+                            "
+                        >
+                            3
+                        </span>
+
+                        <strong>
+                            Risk Assessment
+                        </strong>
+
+                    </div>
+
+                    <p class="text-muted small mb-0">
+                        The system presents the predicted fraud risk for
+                        investigation.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 
 {% endblock %}
