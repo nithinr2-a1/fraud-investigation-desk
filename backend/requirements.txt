@@ -7,3 +7,4 @@ Flask-CORS
 flask_wtf
 numpy
 pandas
+joblib
