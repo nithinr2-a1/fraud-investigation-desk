@@ -3,3 +3,4 @@ pymongo
 python-dotenv
 gunicorn
 Flask-Login
+Flask-CORS
